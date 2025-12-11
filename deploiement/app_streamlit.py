@@ -39,7 +39,7 @@ def preprocess_image(uploaded_file):
     # Ajouter dimension batch
     face_array = np.array(img).reshape(-1,32,32,1)
     face = tf.keras.utils.normalize(face_array, axis=1)
-    face_tf = tf.cast(face_array,tf.float32)
+    face_tf = tf.cast(face,tf.float32)
     return face_tf
 # Charger le modèle .h5
 model = keras.models.load_model("/home/ddb/emotion-api/best_model.h5")
