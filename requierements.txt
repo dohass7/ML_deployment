@@ -1,4 +1,4 @@
-tensorflow
 streamlit
+tensorflow
 opencv-python
 pillow

@@ -1,4 +1,0 @@
-tensorflow
-streamlit
-opencv-python
-pillow
