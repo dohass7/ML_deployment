@@ -42,7 +42,7 @@ jobs:
       - name: Run Streamlit locally (CI Test)
         run: |
           # Lance Streamlit en arrière-plan, vérifie qu'il démarre, puis l'arrête.
-          timeout 30 streamlit run streamlit_app.py --server.headless true --server.port 8080 &
+          timeout 30 streamlit run app_streamlit.py --server.headless true --server.port 8080 &
           sleep 10
           curl -f http://localhost:8080/ || exit 1
 
