@@ -42,7 +42,7 @@ def preprocess_image(uploaded_file):
     face_tf = tf.cast(face,tf.float32)
     return face_tf
 # Charger le modèle .h5
-model = keras.models.load_model("/home/ddb/emotion-api/best_model.h5")
+model = keras.models.load_model("best_model.h5")
 
 # Labels des émotions (à adapter selon ton entraînement)
 labels = ['Angry', 'Fear', 'Happy', 'Sad', 'Suprise']
