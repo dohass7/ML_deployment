@@ -60,7 +60,7 @@ if st.session_state.clicked[1]:
     if uploaded_file is not None:
         # Afficher l'image uploadée
         image = Image.open(uploaded_file)
-        st.image(image, caption="Image uploadée", use_column_width=True)
+        st.image(image, caption="Image chargée", use_column_width=True)
 
         # Prétraitement
         face_array = preprocess_image(uploaded_file)
