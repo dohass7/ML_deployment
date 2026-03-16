@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FaceRead — Emotion AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0a0f;
+      --surface:  #111118;
+      --border:   #1e1e2e;
+      --accent:   #c8f03c;
+      --accent2:  #7c3aed;
+      --text:     #e8e8f0;
+      --muted:    #555570;
+      --radius:   16px;
+      --font-display: 'Syne', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      overflow-x: hidden;
+    }
+
+    /* ── Noise grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── Animated background blobs ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.12;
+      pointer-events: none;
+      z-index: 0;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .blob-1 { width: 600px; height: 600px; background: var(--accent2); top: -150px; left: -150px; animation-delay: 0s; }
+    .blob-2 { width: 400px; height: 400px; background: var(--accent);  bottom: -100px; right: -100px; animation-delay: -4s; }
+    .blob-3 { width: 300px; height: 300px; background: #06b6d4; top: 40%; left: 50%; animation-delay: -8s; }
+
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(40px, 30px) scale(1.05); }
+    }
+
+    /* ── Layout ── */
+    main {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 0 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 40px 0 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 56px;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(28px, 5vw, 42px);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .logo span { color: var(--accent); }
+
+    .status-pill {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 100px;
+    }
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.4s;
+    }
+    .status-dot.online { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ── Drop zone ── */
+    .drop-zone {
+      position: relative;
+      border: 2px dashed var(--border);
+      border-radius: calc(var(--radius) - 4px);
+      padding: 56px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.25s, background 0.25s;
+      overflow: hidden;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(200, 240, 60, 0.03);
+    }
+    .drop-zone input { display: none; }
+
+    .drop-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+      filter: grayscale(0.5);
+      transition: transform 0.3s;
+    }
+    .drop-zone:hover .drop-icon { transform: scale(1.1) rotate(-4deg); }
+
+    .drop-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .drop-sub { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; }
+
+    /* ── Preview strip ── */
+    .preview-strip {
+      position: relative;
+      display: none;
+      align-items: center;
+      gap: 20px;
+      padding: 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .preview-strip.visible { display: flex; }
+
+    .preview-strip img {
+      width: 72px; height: 72px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+    }
+    .preview-meta { flex: 1; }
+    .preview-name { font-size: 13px; font-weight: 400; }
+    .preview-size { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    .btn-clear {
+      background: none; border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer;
+      padding: 6px 12px; border-radius: 8px;
+      font-family: var(--font-mono); font-size: 11px;
+      transition: all 0.2s;
+    }
+    .btn-clear:hover { border-color: #ff4d4d; color: #ff4d4d; }
+
+    /* ── Analyze button ── */
+    .btn-analyze {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent);
+      color: #0a0a0f;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn-analyze:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(200, 240, 60, 0.25);
+    }
+    .btn-analyze:active:not(:disabled) { transform: translateY(0); }
+    .btn-analyze:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-analyze .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(10,10,15,0.3);
+      border-top-color: #0a0a0f;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+    .btn-analyze.loading .btn-label { display: none; }
+    .btn-analyze.loading .spinner  { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Result ── */
+    .result-box {
+      display: none;
+      border-radius: 12px;
+      padding: 28px 32px;
+      background: rgba(200, 240, 60, 0.05);
+      border: 1px solid rgba(200, 240, 60, 0.2);
+      animation: fadeUp 0.4s ease both;
+    }
+    .result-box.visible { display: block; }
+    .result-box.error {
+      background: rgba(255, 77, 77, 0.05);
+      border-color: rgba(255, 77, 77, 0.2);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-label {
+      font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.14em; color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .result-emotion {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 8vw, 64px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .result-box.error .result-emotion { font-size: 18px; color: #ff4d4d; }
+
+    .emotion-icon {
+      font-size: 48px;
+      margin-top: 10px;
+      display: inline-block;
+      animation: bounce 0.5s ease both 0.2s;
+    }
+    @keyframes bounce {
+      0%   { transform: scale(0.4) rotate(-10deg); opacity: 0; }
+      70%  { transform: scale(1.15) rotate(3deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 24px 0;
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      border-top: 1px solid var(--border);
+      margin-top: 56px;
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ── Responsive ── */
+    @media (max-width: 520px) {
+      .card { padding: 24px 20px; }
+      header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <main>
+    <header>
+      <div class="logo">Face<span>Read</span></div>
+      <div class="status-pill">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">checking…</span>
+      </div>
+    </header>
+
+    <section>
+      <div class="card">
+
+        <!-- Drop zone -->
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="image/*" />
+          <span class="drop-icon">🖼️</span>
+          <div class="drop-title">Déposez une image de visage</div>
+          <div class="drop-sub">PNG · JPG · WEBP — cliquez ou glissez</div>
+        </div>
+
+        <!-- Preview -->
+        <div class="preview-strip" id="previewStrip">
+          <img id="previewImg" src="" alt="aperçu" />
+          <div class="preview-meta">
+            <div class="preview-name" id="previewName">—</div>
+            <div class="preview-size" id="previewSize">—</div>
+          </div>
+          <button class="btn-clear" id="btnClear">Effacer</button>
+        </div>
+
+        <!-- Action -->
+        <button class="btn-analyze" id="btnAnalyze" disabled>
+          <span class="btn-label">Analyser l'émotion</span>
+          <div class="spinner"></div>
+        </button>
+
+        <!-- Result -->
+        <div class="result-box" id="resultBox">
+          <div class="result-label">Émotion détectée</div>
+          <div class="result-emotion" id="resultEmotion"></div>
+          <div class="emotion-icon" id="emotionIcon"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer>
+      Propulsé par <a href="#">AWS SageMaker</a> &amp; FastAPI · 
+      endpoint <code>face-emotion-deploy</code> · eu-north-1
+    </footer>
+  </main>
+
+  <script>
+    const EMOTION_ICONS = {
+      Angry:    '😠',
+      Fear:     '😨',
+      Happy:    '😄',
+      Sad:      '😢',
+      Surprise: '😲',
+      default:  '🤔',
+    };
+
+    // ── Elements ──────────────────────────────────────────────────
+    const dropZone    = document.getElementById('dropZone');
+    const fileInput   = document.getElementById('fileInput');
+    const previewStrip = document.getElementById('previewStrip');
+    const previewImg  = document.getElementById('previewImg');
+    const previewName = document.getElementById('previewName');
+    const previewSize = document.getElementById('previewSize');
+    const btnClear    = document.getElementById('btnClear');
+    const btnAnalyze  = document.getElementById('btnAnalyze');
+    const resultBox   = document.getElementById('resultBox');
+    const resultEmotion = document.getElementById('resultEmotion');
+    const emotionIcon = document.getElementById('emotionIcon');
+    const statusDot   = document.getElementById('statusDot');
+    const statusText  = document.getElementById('statusText');
+
+    let selectedFile = null;
+
+    // ── Health check ──────────────────────────────────────────────
+    async function checkHealth() {
+      try {
+        const res = await fetch('/health');
+        const data = await res.json();
+        const up = data.status === 'healthy';
+        statusDot.classList.toggle('online', up);
+        statusText.textContent = up ? 'en ligne' : 'hors ligne';
+      } catch {
+        statusText.textContent = 'inaccessible';
+      }
+    }
+    checkHealth();
+    setInterval(checkHealth, 30000);
+
+    // ── Drop zone interactions ────────────────────────────────────
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) loadFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files[0]) loadFile(fileInput.files[0]);
+    });
+
+    function loadFile(file) {
+      selectedFile = file;
+      const url = URL.createObjectURL(file);
+      previewImg.src = url;
+      previewName.textContent = file.name;
+      previewSize.textContent = formatSize(file.size);
+      previewStrip.classList.add('visible');
+      btnAnalyze.disabled = false;
+      hideResult();
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+    }
+
+    btnClear.addEventListener('click', () => {
+      selectedFile = null;
+      fileInput.value = '';
+      previewStrip.classList.remove('visible');
+      btnAnalyze.disabled = true;
+      hideResult();
+    });
+
+    // ── Prediction ───────────────────────────────────────────────
+    btnAnalyze.addEventListener('click', async () => {
+      if (!selectedFile) return;
+
+      btnAnalyze.classList.add('loading');
+      btnAnalyze.disabled = true;
+      hideResult();
+
+      try {
+        const form = new FormData();
+        form.append('file', selectedFile);
+
+        const res = await fetch('/predict', { method: 'POST', body: form });
+        const data = await res.json();
+
+        if (data.emotion) {
+          showResult(data.emotion);
+        } else {
+          showError(data.error || 'Erreur inconnue');
+        }
+      } catch (err) {
+        showError('Impossible de joindre le serveur');
+      } finally {
+        btnAnalyze.classList.remove('loading');
+        btnAnalyze.disabled = false;
+      }
+    });
+
+    function showResult(emotion) {
+      resultBox.classList.remove('error');
+      resultEmotion.textContent = emotion;
+      emotionIcon.textContent = EMOTION_ICONS[emotion] || EMOTION_ICONS.default;
+      resultBox.classList.add('visible');
+    }
+
+    function showError(msg) {
+      resultBox.classList.add('error');
+      resultEmotion.textContent = msg;
+      emotionIcon.textContent = '⚠️';
+      resultBox.classList.add('visible');
+    }
+
+    function hideResult() {
+      resultBox.classList.remove('visible', 'error');
+    }
+  </script>
+</body>
+</html>
