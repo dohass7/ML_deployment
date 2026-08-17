@@ -4,11 +4,11 @@ on:
   push:
     branches: ["main"]
     paths:
-      - 'fastapi_fronted/**'       # se déclenche UNIQUEMENT si streamlit/ est modifié
+      - 'streamlit/**'       # se déclenche UNIQUEMENT si streamlit/ est modifié
   pull_request:
     branches: ["main"]
     paths:
-      - 'fastapi_fronted/**'
+      - 'streamlit/**'
 jobs:
   deploy:
     runs-on: ubuntu-latest
