@@ -20,7 +20,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # ── Code source + frontend ────────────────────────────────────────
-COPY app.py model.py ./
+COPY app.py model.py best_model.h5 ./
 ##COPY frontend/ ./frontend/
 
 # ── Port ──────────────────────────────────────────────────────────
