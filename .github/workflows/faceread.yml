@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./faceread/backend
+        working-directory: ./faceread/backend #
     steps:
       - uses: actions/checkout@v5
 
