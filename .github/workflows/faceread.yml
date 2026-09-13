@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: ./faceread/backend
     steps:
       - uses: actions/checkout@v5
 
@@ -50,8 +50,8 @@ jobs:
       - name: Build and push API image
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: ./faceread/backend
+          file: ./faceread/backend/Dockerfile
           push: true
           tags: |
             ${{ secrets.REGISTRY_USERNAME }}/faceread-api:latest
@@ -60,8 +60,8 @@ jobs:
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: ./faceread/frontend
+          file: ./faceread/frontend/Dockerfile
           push: true
           tags: |
             ${{ secrets.REGISTRY_USERNAME }}/faceread-front:latest
