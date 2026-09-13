@@ -1,2 +1,2 @@
 FROM nginx:1.27-alpine
-COPY dist /usr/share/nginx/html/imc-ddb2
+COPY index.html /usr/share/nginx/html/imc-ddb2/index.html
