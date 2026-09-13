@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # ── Code source + frontend ────────────────────────────────────────
 COPY app.py model.py ./
-COPY frontend/ ./frontend/
+##COPY frontend/ ./frontend/
 
 # ── Port ──────────────────────────────────────────────────────────
 EXPOSE 8000
