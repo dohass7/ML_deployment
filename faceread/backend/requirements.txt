@@ -1,6 +1,7 @@
 fastapi
 uvicorn
 tensorflow==2.20.0
+tf-keras
 opencv-python-headless
 numpy
 python-multipart
