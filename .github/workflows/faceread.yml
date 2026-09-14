@@ -57,15 +57,15 @@ jobs:
               ${{ secrets.REGISTRY_USERNAME }}/faceread-api:latest
               ${{ secrets.REGISTRY_USERNAME }}/faceread-api:${{ github.sha }}
   
-        - name: Build and push frontend image
-          uses: docker/build-push-action@v7
-          with:
-            context: ./faceread/frontend
-            file: ./faceread/frontend/Dockerfile
-            push: true
-            tags: |
-              ${{ secrets.REGISTRY_USERNAME }}/faceread-front:latest
-              ${{ secrets.REGISTRY_USERNAME }}/faceread-front:${{ github.sha }}
+        # - name: Build and push frontend image
+        #   uses: docker/build-push-action@v7
+        #   with:
+        #     context: ./faceread/frontend
+        #     file: ./faceread/frontend/Dockerfile
+        #     push: true
+        #     tags: |
+        #       ${{ secrets.REGISTRY_USERNAME }}/faceread-front:latest
+        #       ${{ secrets.REGISTRY_USERNAME }}/faceread-front:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
