@@ -12,8 +12,9 @@ model = keras.models.load_model("best_model.h5")
 labels = ['Angry', 'Fear', 'Happy', 'Sad', 'Surprise']
 
 
-def preprocess_image(uploaded_file):
-    image = Image.open(uploaded_file).convert("L")
+def preprocess_image(pil_image):
+    """Reçoit un objet PIL.Image déjà ouvert."""
+    image = pil_image.convert("L")
     img = np.array(image)
     img = cv2.resize(img, (32, 32))
     img = img / 255.0
