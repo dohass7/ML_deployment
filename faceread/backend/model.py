@@ -1,22 +1,35 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 import tensorflow as tf
 from tensorflow import keras
 from PIL import Image
 import numpy as np
 import cv2
 
-# Charger le modèle .h5
 model = keras.models.load_model("best_model.h5")
 
-# Labels des émotions (à adapter selon ton entraînement)
 labels = ['Angry', 'Fear', 'Happy', 'Sad', 'Surprise']
+
+
+def preprocess_image(uploaded_file):
+    image = Image.open(uploaded_file).convert("L")
+    img = np.array(image)
+    img = cv2.resize(img, (32, 32))
+    img = img / 255.0
+    face_array = np.array(img).reshape(-1, 32, 32, 1)
+    face = tf.keras.utils.normalize(face_array, axis=1)
+    face_tf = tf.cast(face, tf.float32)
+    return face_tf
+
+
 def check_status():
-    """Retourne l'état du modèle local."""
     if model is None:
         return "model not loaded"
-    return f"ready ({len(model.layers)} layers, {model.count_params()} params)"
+    return f"ready ({len(model.layers)} layers)"
+
 
 def predict_emotion(face_array):
-    # face_array doit être prétraité (taille, normalisation)
     preds = model.predict(face_array)
     emotion_class = preds.argmax()
     return labels[emotion_class]
