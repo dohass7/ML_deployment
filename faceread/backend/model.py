@@ -1,6 +1,5 @@
 import os
-# Force l'utilisation de Keras 2 (pour charger ton .h5)
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
 # Désactive le GPU (tu es sur CPU)
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import tensorflow as tf
@@ -19,9 +18,9 @@ def preprocess_image(pil_image):
     """Reçoit un objet PIL.Image déjà ouvert."""
     image = pil_image.convert("L")
     img = np.array(image)
-    img = cv2.resize(img, (32, 32))
+    img = cv2.resize(img, (128, 128))
     img = img / 255.0
-    face_array = np.array(img).reshape(-1, 32, 32, 1)
+    face_array = np.array(img).reshape(-1, 128, 128, 1)
     face = tf.keras.utils.normalize(face_array, axis=1)
     face_tf = tf.cast(face, tf.float32)
     return face_tf
