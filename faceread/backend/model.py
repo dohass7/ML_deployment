@@ -10,7 +10,7 @@ import cv2
 model = tf.keras.models.load_model("best_model.h5")
 
 labels = ['anger', 'fear', 'happy', 'neutral', 'sad', 'surprise']
-#['Angry', 'Fear', 'Happy', 'Sad', 'Surprise']
+
 
 
 def preprocess_image(pil_image):
