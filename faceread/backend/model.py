@@ -7,9 +7,10 @@ from PIL import Image
 import numpy as np
 import cv2
 
-model = keras.models.load_model("best_model.h5")
+model = tf.keras.models.load_model("best_model.h5")
 
-labels = ['Angry', 'Fear', 'Happy', 'Sad', 'Surprise']
+labels = ['anger', 'fear', 'happy', 'neutral', 'sad', 'surprise']
+#['Angry', 'Fear', 'Happy', 'Sad', 'Surprise']
 
 
 def preprocess_image(pil_image):
