@@ -1,13 +1,20 @@
 import os
+# Force l'utilisation de Keras 2 (pour charger ton .h5)
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
+# Désactive le GPU (tu es sur CPU)
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
+# Puis seulement après, importe TensorFlow
+import tensorflow as tf
+from tensorflow import keras
 import tensorflow as tf
 from tensorflow import keras
 from PIL import Image
 import numpy as np
 import cv2
 
-model = tf.keras.models.load_model("best_model.h5")
+model = keras.models.load_model("best_model.h5")
 
 labels = ['anger', 'fear', 'happy', 'neutral', 'sad', 'surprise']
 
