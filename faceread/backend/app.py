@@ -4,20 +4,30 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import tensorflow as tf
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import cv2
 import numpy as np
 from model import predict_emotion, check_status
 
 app = FastAPI(title="Face Emotion API")
 
-# CORS — autorise ton frontend à appeler cette API
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # à restreindre en prod
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Servir les fichiers statiques du frontend
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+
+@app.get("/")
+async def root():
+    return FileResponse("frontend/index.html")
 
 
 @app.get("/health")
@@ -45,7 +55,6 @@ async def predict(file: UploadFile = File(...)):
     if img is None:
         return {"error": "Image invalide ou non lisible"}
 
-    # Prétraitement : 32x32, normalisation
     face = cv2.resize(img, (32, 32))
     face = face / 255.0
     face_array = np.array(face).reshape(-1, 32, 32, 1)
