@@ -53,7 +53,7 @@ def predict_emotion(pil_image):
 
     if faces is None or len(faces) == 0:
         return "no_face"
-
+    print("Nombre de visages détectés :", 0 if faces is None else len(faces))
     scale_x = W / w_small
     scale_y = H / h_small
 
