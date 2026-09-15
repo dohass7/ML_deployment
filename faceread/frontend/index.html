@@ -1,1818 +1,2182 @@
-```html
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#07070b" />
-  <title>FaceRead — Emotion Intelligence</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --bg: #07070b;
-      --surface: #0d0d13;
-      --surface-2: #12121a;
-      --surface-3: #181822;
-      --border: rgba(255,255,255,.08);
-      --border-bright: rgba(255,255,255,.15);
-      --text: #f5f5f7;
-      --muted: #777783;
-      --muted-2: #4c4c58;
-      --accent: #b9ff3d;
-      --accent-soft: rgba(185,255,61,.10);
-      --accent-glow: rgba(185,255,61,.20);
-      --purple: #8b5cf6;
-      --cyan: #22d3ee;
-      --red: #ff5c5c;
-      --radius: 22px;
-      --font: "Manrope", sans-serif;
-      --mono: "DM Mono", monospace;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at 15% 10%, rgba(139,92,246,.10), transparent 28%),
-        radial-gradient(circle at 85% 80%, rgba(185,255,61,.07), transparent 25%),
-        var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      opacity: .25;
-      background-image:
-        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-      background-size: 50px 50px;
-      mask-image: linear-gradient(to bottom, black, transparent 80%);
-    }
-
-    .ambient {
-      position: fixed;
-      width: 500px;
-      height: 500px;
-      border-radius: 50%;
-      filter: blur(120px);
-      opacity: .10;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .ambient.one {
-      background: var(--purple);
-      top: -300px;
-      left: -200px;
-    }
-
-    .ambient.two {
-      background: var(--accent);
-      right: -250px;
-      bottom: -250px;
-    }
-
-    .app {
-      position: relative;
-      z-index: 1;
-      width: min(1100px, calc(100% - 40px));
-      margin: auto;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-mark {
-      width: 38px;
-      height: 38px;
-      border-radius: 11px;
-      display: grid;
-      place-items: center;
-      background: var(--accent);
-      color: #08080b;
-      font-size: 18px;
-      font-weight: 800;
-      box-shadow: 0 0 30px rgba(185,255,61,.15);
-    }
-
-    .brand-name {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -.04em;
-    }
-
-    .brand-name span {
-      color: var(--accent);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-    }
-
-    .version {
-      color: var(--muted);
-      font: 11px var(--mono);
-    }
-
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 13px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(255,255,255,.02);
-      color: var(--muted);
-      font: 10px var(--mono);
-      text-transform: uppercase;
-      letter-spacing: .1em;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--muted-2);
-      transition: .3s;
-    }
-
-    .status-dot.online {
-      background: var(--accent);
-      box-shadow: 0 0 12px var(--accent);
-    }
-
-    .hero {
-      padding: 75px 0 50px;
-      text-align: center;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.025);
-      color: var(--muted);
-      font: 10px var(--mono);
-      text-transform: uppercase;
-      letter-spacing: .15em;
-      margin-bottom: 25px;
-    }
-
-    .eyebrow-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 8px var(--accent);
-    }
-
-    h1 {
-      max-width: 760px;
-      margin: auto;
-      font-size: clamp(42px, 7vw, 76px);
-      line-height: .98;
-      letter-spacing: -.065em;
-      font-weight: 800;
-    }
-
-    h1 .highlight {
-      color: var(--accent);
-    }
-
-    .hero-description {
-      max-width: 590px;
-      margin: 24px auto 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.8;
-    }
-
-    .workspace {
-      position: relative;
-      background:
-        linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.015));
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      padding: 10px;
-      box-shadow:
-        0 40px 100px rgba(0,0,0,.35),
-        inset 0 1px rgba(255,255,255,.04);
-    }
-
-    .workspace-inner {
-      background: rgba(9,9,14,.85);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 28px;
-    }
-
-    .workspace-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 22px;
-    }
-
-    .workspace-title {
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .workspace-meta {
-      color: var(--muted);
-      font: 10px var(--mono);
-    }
-
-    .drop-zone {
-      position: relative;
-      min-height: 320px;
-      border: 1px dashed rgba(255,255,255,.14);
-      border-radius: 17px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      cursor: pointer;
-      overflow: hidden;
-      transition: .3s ease;
-      background:
-        radial-gradient(circle at center, rgba(185,255,61,.035), transparent 50%),
-        rgba(255,255,255,.015);
-    }
-
-    .drop-zone:hover,
-    .drop-zone.dragover {
-      border-color: rgba(185,255,61,.6);
-      background:
-        radial-gradient(circle at center, rgba(185,255,61,.08), transparent 55%),
-        rgba(255,255,255,.02);
-      transform: translateY(-1px);
-    }
-
-    .drop-zone input {
-      display: none;
-    }
-
-    .upload-icon {
-      width: 72px;
-      height: 72px;
-      border-radius: 20px;
-      display: grid;
-      place-items: center;
-      background: var(--surface-3);
-      border: 1px solid var(--border);
-      font-size: 28px;
-      margin-bottom: 22px;
-      transition: .3s;
-    }
-
-    .drop-zone:hover .upload-icon {
-      transform: scale(1.08);
-      border-color: rgba(185,255,61,.3);
-      box-shadow: 0 0 35px rgba(185,255,61,.08);
-    }
-
-    .upload-title {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .upload-subtitle {
-      color: var(--muted);
-      font: 11px var(--mono);
-      line-height: 1.8;
-    }
-
-    .upload-formats {
-      margin-top: 18px;
-      display: flex;
-      gap: 7px;
-    }
-
-    .format {
-      padding: 5px 8px;
-      border-radius: 6px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font: 9px var(--mono);
-    }
-
-    .preview {
-      display: none;
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      align-items: center;
-      gap: 15px;
-    }
-
-    .preview.visible {
-      display: flex;
-    }
-
-    .preview-image-wrapper {
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .preview-image {
-      width: 70px;
-      height: 70px;
-      object-fit: cover;
-      border-radius: 10px;
-      display: block;
-    }
-
-    .preview-check {
-      position: absolute;
-      right: -5px;
-      bottom: -5px;
-      width: 19px;
-      height: 19px;
-      border-radius: 50%;
-      background: var(--accent);
-      color: #000;
-      font-size: 10px;
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      border: 2px solid var(--surface);
-    }
-
-    .preview-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .preview-name {
-      font-size: 12px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .preview-size {
-      margin-top: 5px;
-      color: var(--muted);
-      font: 10px var(--mono);
-    }
-
-    .clear-btn {
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      border-radius: 8px;
-      cursor: pointer;
-      font: 10px var(--mono);
-      transition: .2s;
-    }
-
-    .clear-btn:hover {
-      color: var(--red);
-      border-color: rgba(255,92,92,.4);
-    }
-
-    .analyze-btn {
-      position: relative;
-      width: 100%;
-      margin-top: 14px;
-      min-height: 58px;
-      border: 0;
-      border-radius: 13px;
-      background: var(--accent);
-      color: #08080b;
-      cursor: pointer;
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: .01em;
-      overflow: hidden;
-      transition: .25s;
-    }
-
-    .analyze-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 40px rgba(185,255,61,.18);
-    }
-
-    .analyze-btn:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
-    .analyze-btn:disabled {
-      opacity: .3;
-      cursor: not-allowed;
-    }
-
-    .btn-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .btn-arrow {
-      font-size: 17px;
-      transition: .25s;
-    }
-
-    .analyze-btn:hover .btn-arrow {
-      transform: translateX(4px);
-    }
-
-    .spinner {
-      display: none;
-      width: 19px;
-      height: 19px;
-      border: 2px solid rgba(0,0,0,.2);
-      border-top-color: #000;
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
-
-    .analyze-btn.loading .btn-content {
-      display: none;
-    }
-
-    .analyze-btn.loading .spinner {
-      display: block;
-      margin: auto;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .scan-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0;
-      transition: .3s;
-    }
-
-    .drop-zone.scanning .scan-overlay {
-      opacity: 1;
-    }
-
-    .scan-line {
-      position: absolute;
-      left: 5%;
-      right: 5%;
-      height: 1px;
-      background: var(--accent);
-      box-shadow: 0 0 20px var(--accent);
-      animation: scan 1.8s ease-in-out infinite;
-    }
-
-    @keyframes scan {
-      0% {
-        top: 10%;
-        opacity: 0;
-      }
-
-      15% {
-        opacity: 1;
-      }
-
-      50% {
-        top: 90%;
-        opacity: 1;
-      }
-
-      85% {
-        opacity: 1;
-      }
-
-      100% {
-        top: 10%;
-        opacity: 0;
-      }
-    }
-
-    .result {
-      display: none;
-      margin-top: 14px;
-      padding: 28px;
-      border-radius: 17px;
-      background:
-        radial-gradient(circle at 85% 20%, rgba(185,255,61,.08), transparent 30%),
-        var(--surface);
-      border: 1px solid rgba(185,255,61,.18);
-      animation: resultIn .45s ease both;
-    }
-
-    .result.visible {
-      display: block;
-    }
-
-    .result.error {
-      border-color: rgba(255,92,92,.25);
-      background: rgba(255,92,92,.035);
-    }
-
-    @keyframes resultIn {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 20px;
-    }
-
-    .result-label {
-      color: var(--muted);
-      font: 9px var(--mono);
-      text-transform: uppercase;
-      letter-spacing: .15em;
-    }
-
-    .result-badge {
-      padding: 5px 9px;
-      border-radius: 6px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font: 9px var(--mono);
-      border: 1px solid rgba(185,255,61,.12);
-    }
-
-    .result-main {
-      display: flex;
-      align-items: flex-start;
-      gap: 22px;
-    }
-
-    .emotion-icon {
-      width: 78px;
-      height: 78px;
-      flex-shrink: 0;
-      display: grid;
-      place-items: center;
-      border-radius: 20px;
-      background: rgba(185,255,61,.07);
-      border: 1px solid rgba(185,255,61,.15);
-      font-size: 39px;
-      animation: pop .5s ease both .15s;
-    }
-
-    @keyframes pop {
-      from {
-        transform: scale(.6) rotate(-10deg);
-        opacity: 0;
-      }
-
-      to {
-        transform: scale(1) rotate(0);
-        opacity: 1;
-      }
-    }
-
-    .emotion-name {
-      width: 100%;
-      font-size: 18px;
-      line-height: 1;
-      font-weight: 800;
-      letter-spacing: -.02em;
-    }
-
-    .face-result {
-      margin-bottom: 14px;
-      padding: 16px;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 13px;
-      background: rgba(255,255,255,.025);
-      animation: faceIn .4s ease both;
-    }
-
-    .face-result:last-child {
-      margin-bottom: 0;
-    }
-
-    @keyframes faceIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .face-result-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 9px;
-    }
-
-    .face-icon {
-      font-size: 23px;
-    }
-
-    .face-number {
-      color: var(--muted);
-      font: 10px var(--mono);
-      text-transform: uppercase;
-      letter-spacing: .1em;
-    }
-
-    .face-emotion {
-      font-size: 28px;
-      font-weight: 800;
-      line-height: 1.1;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-
-    .face-confidence-top {
-      display: flex;
-      justify-content: space-between;
-      color: var(--muted);
-      font: 9px var(--mono);
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      margin-bottom: 7px;
-    }
-
-    .face-confidence-value {
-      color: var(--text);
-    }
-
-    .face-confidence-bar {
-      height: 5px;
-      background: rgba(255,255,255,.06);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-
-    .face-confidence-fill {
-      height: 100%;
-      background: var(--accent);
-      border-radius: inherit;
-      box-shadow: 0 0 15px rgba(185,255,61,.35);
-    }
-
-    .confidence {
-      margin-top: 25px;
-    }
-
-    .confidence-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 9px;
-      color: var(--muted);
-      font: 9px var(--mono);
-      text-transform: uppercase;
-      letter-spacing: .1em;
-    }
-
-    .confidence-value {
-      color: var(--text);
-    }
-
-    .confidence-bar {
-      height: 5px;
-      background: rgba(255,255,255,.06);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-
-    .confidence-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--accent);
-      border-radius: inherit;
-      box-shadow: 0 0 15px rgba(185,255,61,.35);
-      transition: width 1s cubic-bezier(.2,.8,.2,1);
-    }
-
-    footer {
-      padding: 40px 0 30px;
-      display: flex;
-      justify-content: space-between;
-      color: var(--muted);
-      font: 9px var(--mono);
-      text-transform: uppercase;
-      letter-spacing: .08em;
-    }
-
-    footer strong {
-      color: var(--text);
-      font-weight: 400;
-    }
-
-    @media (max-width: 650px) {
-      .app {
-        width: min(100% - 24px, 1100px);
-      }
-
-      header {
-        height: 75px;
-      }
-
-      .version {
-        display: none;
-      }
-
-      .hero {
-        padding: 55px 0 35px;
-      }
-
-      h1 {
-        font-size: 45px;
-      }
-
-      .hero-description {
-        font-size: 13px;
-      }
-
-      .workspace-inner {
-        padding: 16px;
-      }
-
-      .drop-zone {
-        min-height: 280px;
-      }
-
-      footer {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-      }
-    }
-
-    @media (max-width: 420px) {
-      .header-right .status {
-        padding: 7px 9px;
-      }
-
-      .workspace-top {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 5px;
-      }
-
-      .result-main {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .emotion-icon {
-        width: 65px;
-        height: 65px;
-      }
-
-      .preview {
-        gap: 10px;
-      }
-
-      .clear-btn {
-        padding: 7px 8px;
-      }
-
-      .face-emotion {
-        font-size: 24px;
-      }
-    }
-  </style>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        FaceRead — Emotion Intelligence
+    </title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+
+            --bg: #050507;
+
+            --card: rgba(
+                18,
+                18,
+                24,
+                0.85
+            );
+
+            --card-border: rgba(
+                255,
+                255,
+                255,
+                0.08
+            );
+
+            --purple: #8b5cf6;
+
+            --purple-light: #a78bfa;
+
+            --green: #22c55e;
+
+            --green-light: #4ade80;
+
+            --text: #f5f5f5;
+
+            --muted: #a1a1aa;
+
+            --danger: #ef4444;
+
+            --radius: 24px;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 20% 10%,
+                    rgba(
+                        139,
+                        92,
+                        246,
+                        0.14
+                    ),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 80% 80%,
+                    rgba(
+                        34,
+                        197,
+                        94,
+                        0.08
+                    ),
+                    transparent 30%
+                ),
+
+                var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            padding-bottom: 60px;
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        header {
+
+            width: 100%;
+
+            border-bottom:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.06
+                );
+
+            backdrop-filter:
+                blur(20px);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            background:
+                rgba(
+                    5,
+                    5,
+                    7,
+                    0.75
+                );
+        }
+
+
+        .header-inner {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            padding:
+                20px 24px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+
+        .logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.5px;
+        }
+
+
+        .logo-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--purple),
+                    var(--green)
+                );
+
+            box-shadow:
+                0 0 30px
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.25
+                );
+        }
+
+
+        .status {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+
+        .status-dot {
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            background:
+                var(--green);
+
+            box-shadow:
+                0 0 12px
+                var(--green);
+        }
+
+
+        /* ==================================================
+           MAIN
+        ================================================== */
+
+        main {
+
+            max-width: 1100px;
+
+            margin: auto;
+
+            padding:
+                70px 24px 0;
+        }
+
+
+        /* ==================================================
+           HERO
+        ================================================== */
+
+        .hero {
+
+            text-align: center;
+
+            max-width: 800px;
+
+            margin:
+                0 auto 50px;
+        }
+
+
+        .badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                8px 14px;
+
+            border-radius: 999px;
+
+            background:
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.1
+                );
+
+            border:
+                1px solid
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.2
+                );
+
+            color:
+                var(--purple-light);
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            margin-bottom: 22px;
+        }
+
+
+        .hero h1 {
+
+            font-size:
+                clamp(
+                    42px,
+                    7vw,
+                    76px
+                );
+
+            line-height: 0.98;
+
+            letter-spacing:
+                -4px;
+
+            margin-bottom: 24px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ffffff 20%,
+                    #c4b5fd 60%,
+                    #4ade80
+                );
+
+            -webkit-background-clip: text;
+
+            background-clip: text;
+
+            color: transparent;
+        }
+
+
+        .hero p {
+
+            color: var(--muted);
+
+            font-size: 18px;
+
+            line-height: 1.7;
+
+            max-width: 650px;
+
+            margin: auto;
+        }
+
+
+        /* ==================================================
+           ANALYZER CARD
+        ================================================== */
+
+        .analyzer {
+
+            background:
+                var(--card);
+
+            border:
+                1px solid
+                var(--card-border);
+
+            border-radius:
+                var(--radius);
+
+            padding: 28px;
+
+            box-shadow:
+                0 30px 80px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.35
+                );
+
+            backdrop-filter:
+                blur(25px);
+        }
+
+
+        .analyzer-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 24px;
+        }
+
+
+        .analyzer-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .analyzer-title-icon {
+
+            width: 46px;
+
+            height: 46px;
+
+            border-radius: 14px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 22px;
+
+            background:
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.12
+                );
+
+            border:
+                1px solid
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.2
+                );
+        }
+
+
+        .analyzer-title h2 {
+
+            font-size: 20px;
+        }
+
+
+        .analyzer-title span {
+
+            display: block;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            margin-top: 3px;
+        }
+
+
+        /* ==================================================
+           DROP ZONE
+        ================================================== */
+
+        .drop-zone {
+
+            min-height: 240px;
+
+            border:
+                1.5px dashed
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.16
+                );
+
+            border-radius: 20px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            padding: 30px;
+
+            cursor: pointer;
+
+            transition:
+                border-color .25s,
+                background .25s,
+                transform .25s;
+        }
+
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+
+            border-color:
+                var(--purple);
+
+            background:
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.06
+                );
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        .upload-icon {
+
+            width: 64px;
+
+            height: 64px;
+
+            border-radius: 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 28px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(
+                        139,
+                        92,
+                        246,
+                        0.18
+                    ),
+                    rgba(
+                        34,
+                        197,
+                        94,
+                        0.10
+                    )
+                );
+
+            margin-bottom: 18px;
+        }
+
+
+        .drop-zone h3 {
+
+            font-size: 18px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .drop-zone p {
+
+            color: var(--muted);
+
+            font-size: 14px;
+        }
+
+
+        input[type="file"] {
+
+            display: none;
+        }
+
+
+        /* ==================================================
+           ORIGINAL PREVIEW
+        ================================================== */
+
+        .preview {
+
+            display: none;
+
+            margin-top: 24px;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+
+            background: #000;
+        }
+
+
+        .preview img {
+
+            width: 100%;
+
+            max-height: 500px;
+
+            object-fit: contain;
+
+            display: block;
+        }
+
+
+        /* ==================================================
+           BUTTON
+        ================================================== */
+
+        .actions {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 20px;
+        }
+
+
+        button {
+
+            border: none;
+
+            cursor: pointer;
+
+            font-family: inherit;
+        }
+
+
+        .analyze-btn {
+
+            flex: 1;
+
+            padding:
+                16px 24px;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--purple),
+                    #7c3aed
+                );
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            transition:
+                transform .2s,
+                box-shadow .2s,
+                opacity .2s;
+        }
+
+
+        .analyze-btn:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 15px 35px
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.25
+                );
+        }
+
+
+        .analyze-btn:disabled {
+
+            opacity: .5;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+            box-shadow: none;
+        }
+
+
+        .reset-btn {
+
+            padding:
+                16px 22px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.06
+                );
+
+            color: white;
+
+            font-weight: 600;
+
+            display: none;
+        }
+
+
+        /* ==================================================
+           LOADING
+        ================================================== */
+
+        .loading {
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            margin-top: 24px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+        }
+
+
+        .spinner {
+
+            width: 20px;
+
+            height: 20px;
+
+            border:
+                2px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.15
+                );
+
+            border-top-color:
+                var(--purple);
+
+            border-radius: 50%;
+
+            animation:
+                spin .8s linear infinite;
+        }
+
+
+        @keyframes spin {
+
+            to {
+                transform:
+                    rotate(360deg);
+            }
+        }
+
+
+        /* ==================================================
+           RESULTS
+        ================================================== */
+
+        .results {
+
+            display: none;
+
+            margin-top: 32px;
+        }
+
+
+        .results-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+
+        .results-header h2 {
+
+            font-size: 21px;
+        }
+
+
+        .faces-count {
+
+            padding:
+                7px 12px;
+
+            border-radius: 999px;
+
+            background:
+                rgba(
+                    34,
+                    197,
+                    94,
+                    0.1
+                );
+
+            border:
+                1px solid
+                rgba(
+                    34,
+                    197,
+                    94,
+                    0.2
+                );
+
+            color:
+                var(--green-light);
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        /* ==================================================
+           ANNOTATED IMAGE
+        ================================================== */
+
+        .annotated-wrapper {
+
+            position: relative;
+
+            background: #000;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+
+            box-shadow:
+                0 25px 70px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.4
+                );
+        }
+
+
+        .annotated-wrapper img {
+
+            display: block;
+
+            width: 100%;
+
+            max-height: 700px;
+
+            object-fit: contain;
+        }
+
+
+        /* ==================================================
+           FACE RESULTS
+        ================================================== */
+
+        .face-results {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(
+                        220px,
+                        1fr
+                    )
+                );
+
+            gap: 14px;
+
+            margin-top: 18px;
+        }
+
+
+        .face-card {
+
+            padding: 18px;
+
+            border-radius: 18px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.035
+                );
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.07
+                );
+        }
+
+
+        .face-card-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 12px;
+        }
+
+
+        .face-number {
+
+            font-size: 13px;
+
+            color: var(--muted);
+        }
+
+
+        .emotion {
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            margin-bottom: 10px;
+        }
+
+
+        .confidence-label {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .confidence-bar {
+
+            height: 6px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+
+            border-radius: 999px;
+
+            overflow: hidden;
+        }
+
+
+        .confidence-fill {
+
+            height: 100%;
+
+            border-radius: inherit;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--purple),
+                    var(--green)
+                );
+        }
+
+
+        /* ==================================================
+           ERROR
+        ================================================== */
+
+        .error {
+
+            display: none;
+
+            margin-top: 20px;
+
+            padding: 16px 18px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(
+                    239,
+                    68,
+                    68,
+                    0.08
+                );
+
+            border:
+                1px solid
+                rgba(
+                    239,
+                    68,
+                    68,
+                    0.2
+                );
+
+            color:
+                #fca5a5;
+
+            font-size: 14px;
+        }
+
+
+        /* ==================================================
+           NO FACE
+        ================================================== */
+
+        .no-face {
+
+            display: none;
+
+            text-align: center;
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.03
+                );
+
+            color: var(--muted);
+
+            margin-top: 18px;
+        }
+
+
+        .no-face-icon {
+
+            font-size: 38px;
+
+            margin-bottom: 12px;
+        }
+
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        footer {
+
+            text-align: center;
+
+            color:
+                #52525b;
+
+            font-size: 12px;
+
+            margin-top: 50px;
+        }
+
+
+        /* ==================================================
+           RESPONSIVE
+        ================================================== */
+
+        @media (max-width: 700px) {
+
+            main {
+
+                padding:
+                    45px 16px 0;
+            }
+
+
+            .header-inner {
+
+                padding:
+                    16px;
+            }
+
+
+            .hero {
+
+                margin-bottom: 35px;
+            }
+
+
+            .hero h1 {
+
+                letter-spacing:
+                    -2px;
+            }
+
+
+            .hero p {
+
+                font-size: 15px;
+            }
+
+
+            .analyzer {
+
+                padding: 18px;
+            }
+
+
+            .analyzer-header {
+
+                align-items:
+                    flex-start;
+            }
+
+
+            .status {
+
+                display: none;
+            }
+
+
+            .drop-zone {
+
+                min-height: 210px;
+            }
+
+
+            .actions {
+
+                flex-direction:
+                    column;
+            }
+
+
+            .reset-btn {
+
+                width: 100%;
+            }
+
+
+            .results-header {
+
+                align-items:
+                    flex-start;
+
+                gap: 12px;
+            }
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-  <div class="ambient one"></div>
-  <div class="ambient two"></div>
 
-  <div class="app">
+<header>
 
-    <!-- HEADER -->
-    <header>
-      <div class="brand">
-        <div class="brand-mark">F</div>
+    <div class="header-inner">
 
-        <div class="brand-name">
-          Face<span>Read</span>
+        <div class="logo">
+
+            <div class="logo-icon">
+                👁️
+            </div>
+
+            <span>
+                FaceRead
+            </span>
+
         </div>
-      </div>
 
-      <div class="header-right">
-        <span class="version">v1.0.0</span>
 
         <div class="status">
-          <span class="status-dot" id="statusDot"></span>
-          <span id="statusText">Connexion...</span>
-        </div>
-      </div>
-    </header>
 
-    <!-- HERO -->
+            <span class="status-dot"></span>
+
+            Emotion AI active
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<main>
+
+
+    <!-- ==================================================
+         HERO
+    ================================================== -->
+
     <section class="hero">
 
-      <div class="eyebrow">
-        <span class="eyebrow-dot"></span>
-        Computer Vision · Emotion AI
-      </div>
+        <div class="badge">
+            ✨ AI Vision
+        </div>
 
-      <h1>
-        Comprenez les émotions<br />
-        <span class="highlight">en un instant.</span>
-      </h1>
+        <h1>
+            Understand<br>
+            every expression.
+        </h1>
 
-      <p class="hero-description">
-        Importez une image contenant un ou plusieurs visages
-        et laissez notre modèle d'intelligence artificielle
-        analyser les émotions détectées.
-      </p>
+        <p>
+            Upload an image and let our AI detect
+            every face and analyze its emotion
+            directly on the original image.
+        </p>
 
     </section>
 
-    <!-- WORKSPACE -->
-    <main class="workspace">
 
-      <div class="workspace-inner">
 
-        <div class="workspace-top">
+    <!-- ==================================================
+         ANALYZER
+    ================================================== -->
 
-          <div class="workspace-title">
-            Analyse faciale
-          </div>
+    <section class="analyzer">
 
-          <div class="workspace-meta">
-            IMAGE → MODEL → EMOTION
-          </div>
+
+        <div class="analyzer-header">
+
+            <div class="analyzer-title">
+
+                <div class="analyzer-title-icon">
+                    😀
+                </div>
+
+                <div>
+
+                    <h2>
+                        Emotion AI
+                    </h2>
+
+                    <span>
+                        Multi-face emotion detection
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="status">
+
+                <span class="status-dot"></span>
+
+                Ready
+
+            </div>
 
         </div>
 
-        <!-- DROP ZONE -->
-        <div class="drop-zone" id="dropZone">
 
-          <input
-            type="file"
-            id="fileInput"
-            accept="image/png,image/jpeg,image/webp"
-          />
 
-          <div class="upload-icon">
-            ◉
-          </div>
+        <!-- ==================================================
+             DROP ZONE
+        ================================================== -->
 
-          <div class="upload-title">
-            Déposez votre image ici
-          </div>
-
-          <div class="upload-subtitle">
-            Cliquez pour parcourir ou glissez-déposez<br />
-            une photo contenant un ou plusieurs visages
-          </div>
-
-          <div class="upload-formats">
-            <span class="format">JPG</span>
-            <span class="format">PNG</span>
-            <span class="format">WEBP</span>
-          </div>
-
-          <!-- SCAN ANIMATION -->
-          <div class="scan-overlay">
-            <div class="scan-line"></div>
-          </div>
-
-        </div>
-
-        <!-- PREVIEW -->
-        <div class="preview" id="preview">
-
-          <div class="preview-image-wrapper">
-
-            <img
-              class="preview-image"
-              id="previewImg"
-              src=""
-              alt="Aperçu"
-            />
-
-            <div class="preview-check">
-              ✓
-            </div>
-
-          </div>
-
-          <div class="preview-info">
-
-            <div class="preview-name" id="previewName">
-              —
-            </div>
-
-            <div class="preview-size" id="previewSize">
-              —
-            </div>
-
-          </div>
-
-          <button
-            class="clear-btn"
-            id="btnClear"
-            type="button"
-          >
-            Effacer
-          </button>
-
-        </div>
-
-        <!-- ANALYZE -->
-        <button
-          class="analyze-btn"
-          id="btnAnalyze"
-          type="button"
-          disabled
+        <div
+            class="drop-zone"
+            id="dropZone"
         >
 
-          <div class="btn-content">
-            <span>Analyser les émotions</span>
-            <span class="btn-arrow">→</span>
-          </div>
-
-          <div class="spinner"></div>
-
-        </button>
-
-        <!-- RESULT -->
-        <div class="result" id="result">
-
-          <div class="result-header">
-
-            <div class="result-label">
-              Analyse terminée
+            <div class="upload-icon">
+                ↑
             </div>
 
-            <div class="result-badge">
-              ● MODEL ACTIVE
-            </div>
+            <h3>
+                Drop your image here
+            </h3>
 
-          </div>
+            <p>
+                or click to browse your files
+            </p>
 
-          <div class="result-main">
-
-            <div class="emotion-icon" id="emotionIcon">
-              🤔
-            </div>
-
-            <div style="width: 100%;">
-
-              <div class="result-label" id="resultSubtitle">
-                Émotions détectées
-              </div>
-
-              <div
-                class="emotion-name"
-                id="resultEmotion"
-              >
-                —
-              </div>
-
-            </div>
-
-          </div>
-
-          <!-- SUMMARY -->
-          <div class="confidence">
-
-            <div class="confidence-top">
-
-              <span>
-                Résultat de l'analyse
-              </span>
-
-              <span
-                class="confidence-value"
-                id="confidenceValue"
-              >
-                Analyse
-              </span>
-
-            </div>
-
-            <div class="confidence-bar">
-
-              <div
-                class="confidence-fill"
-                id="confidenceFill"
-              ></div>
-
-            </div>
-
-          </div>
+            <p style="margin-top:8px;font-size:12px;">
+                JPG, JPEG, PNG, WEBP
+            </p>
 
         </div>
 
-      </div>
 
-    </main>
+        <input
+            type="file"
+            id="fileInput"
+            accept="image/*"
+        >
 
-    <!-- FOOTER -->
+
+
+        <!-- ==================================================
+             ORIGINAL PREVIEW
+        ================================================== -->
+
+        <div
+            class="preview"
+            id="preview"
+        >
+
+            <img
+                id="previewImage"
+                alt="Image sélectionnée"
+            >
+
+        </div>
+
+
+
+        <!-- ==================================================
+             ACTIONS
+        ================================================== -->
+
+        <div class="actions">
+
+            <button
+                class="analyze-btn"
+                id="analyzeBtn"
+                disabled
+            >
+                🔍 Analyze image
+            </button>
+
+            <button
+                class="reset-btn"
+                id="resetBtn"
+            >
+                Reset
+            </button>
+
+        </div>
+
+
+
+        <!-- ==================================================
+             LOADING
+        ================================================== -->
+
+        <div
+            class="loading"
+            id="loading"
+        >
+
+            <div class="spinner"></div>
+
+            <span>
+                Detecting faces and analyzing emotions...
+            </span>
+
+        </div>
+
+
+
+        <!-- ==================================================
+             ERROR
+        ================================================== -->
+
+        <div
+            class="error"
+            id="error"
+        ></div>
+
+
+
+        <!-- ==================================================
+             RESULTS
+        ================================================== -->
+
+        <section
+            class="results"
+            id="results"
+        >
+
+            <div class="results-header">
+
+                <h2>
+                    Analysis result
+                </h2>
+
+                <div
+                    class="faces-count"
+                    id="facesCount"
+                >
+                    0 faces
+                </div>
+
+            </div>
+
+
+
+            <!-- IMAGE ANNOTÉE -->
+
+            <div class="annotated-wrapper">
+
+                <img
+                    id="annotatedImage"
+                    alt="Image analysée avec détection des visages"
+                >
+
+            </div>
+
+
+
+            <!-- RÉSULTATS INDIVIDUELS -->
+
+            <div
+                class="face-results"
+                id="faceResults"
+            ></div>
+
+
+
+            <!-- AUCUN VISAGE -->
+
+            <div
+                class="no-face"
+                id="noFace"
+            >
+
+                <div class="no-face-icon">
+                    🔎
+                </div>
+
+                <strong>
+                    Aucun visage détecté
+                </strong>
+
+                <p style="margin-top:8px;">
+                    Essayez une autre image.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </section>
+
+
+
     <footer>
 
-      <span>
-        FaceRead / Emotion Intelligence
-      </span>
-
-      <span>
-        <strong>SageMaker</strong>
-        ·
-        <strong>FastAPI</strong>
-        ·
-        eu-north-1
-      </span>
+        FaceRead — AI Emotion Intelligence
 
     </footer>
 
-  </div>
 
-  <script>
-
-    /*
-     * ============================================================
-     * EMOTIONS
-     * ============================================================
-     */
-
-    const EMOTION_ICONS = {
-      Angry: "😠",
-      Fear: "😨",
-      Happy: "😄",
-      Sad: "😢",
-      Surprise: "😲",
-      Disgust: "🤢",
-      Neutral: "😐",
-      default: "🤔"
-    };
+</main>
 
 
-    /*
-     * ============================================================
-     * DOM
-     * ============================================================
-     */
+
+<script>
+
+    // =====================================================
+    // ELEMENTS
+    // =====================================================
 
     const dropZone =
-      document.getElementById("dropZone");
+        document.getElementById(
+            "dropZone"
+        );
 
     const fileInput =
-      document.getElementById("fileInput");
+        document.getElementById(
+            "fileInput"
+        );
 
     const preview =
-      document.getElementById("preview");
+        document.getElementById(
+            "preview"
+        );
 
-    const previewImg =
-      document.getElementById("previewImg");
+    const previewImage =
+        document.getElementById(
+            "previewImage"
+        );
 
-    const previewName =
-      document.getElementById("previewName");
+    const analyzeBtn =
+        document.getElementById(
+            "analyzeBtn"
+        );
 
-    const previewSize =
-      document.getElementById("previewSize");
+    const resetBtn =
+        document.getElementById(
+            "resetBtn"
+        );
 
-    const btnClear =
-      document.getElementById("btnClear");
+    const loading =
+        document.getElementById(
+            "loading"
+        );
 
-    const btnAnalyze =
-      document.getElementById("btnAnalyze");
+    const results =
+        document.getElementById(
+            "results"
+        );
 
-    const result =
-      document.getElementById("result");
+    const annotatedImage =
+        document.getElementById(
+            "annotatedImage"
+        );
 
-    const resultEmotion =
-      document.getElementById("resultEmotion");
+    const faceResults =
+        document.getElementById(
+            "faceResults"
+        );
 
-    const emotionIcon =
-      document.getElementById("emotionIcon");
+    const facesCount =
+        document.getElementById(
+            "facesCount"
+        );
 
-    const resultSubtitle =
-      document.getElementById("resultSubtitle");
+    const noFace =
+        document.getElementById(
+            "noFace"
+        );
 
-    const confidenceFill =
-      document.getElementById("confidenceFill");
+    const errorBox =
+        document.getElementById(
+            "error"
+        );
 
-    const confidenceValue =
-      document.getElementById("confidenceValue");
-
-    const statusDot =
-      document.getElementById("statusDot");
-
-    const statusText =
-      document.getElementById("statusText");
-
-
-    /*
-     * ============================================================
-     * STATE
-     * ============================================================
-     */
 
     let selectedFile = null;
 
 
-    /*
-     * ============================================================
-     * HEALTH CHECK
-     * ============================================================
-     */
+    // =====================================================
+    // FILE SELECTION
+    // =====================================================
 
-    async function checkHealth() {
+    dropZone.addEventListener(
+        "click",
+        () => {
+            fileInput.click();
+        }
+    );
 
-      try {
 
-        const response = await fetch("/health", {
-          method: "GET",
-          cache: "no-store"
-        });
+    fileInput.addEventListener(
+        "change",
+        event => {
 
-        if (!response.ok) {
-          throw new Error("API unavailable");
+            const file =
+                event.target.files[0];
+
+            if (file) {
+
+                handleFile(file);
+            }
+        }
+    );
+
+
+    // =====================================================
+    // DRAG & DROP
+    // =====================================================
+
+    dropZone.addEventListener(
+        "dragover",
+        event => {
+
+            event.preventDefault();
+
+            dropZone.classList.add(
+                "dragover"
+            );
+        }
+    );
+
+
+    dropZone.addEventListener(
+        "dragleave",
+        () => {
+
+            dropZone.classList.remove(
+                "dragover"
+            );
+        }
+    );
+
+
+    dropZone.addEventListener(
+        "drop",
+        event => {
+
+            event.preventDefault();
+
+            dropZone.classList.remove(
+                "dragover"
+            );
+
+            const file =
+                event.dataTransfer.files[0];
+
+            if (file) {
+
+                handleFile(file);
+            }
+        }
+    );
+
+
+    // =====================================================
+    // HANDLE FILE
+    // =====================================================
+
+    function handleFile(file) {
+
+        if (
+            !file.type.startsWith(
+                "image/"
+            )
+        ) {
+
+            showError(
+                "Veuillez sélectionner une image."
+            );
+
+            return;
         }
 
-        const data = await response.json();
 
-        if (data.status === "healthy") {
-
-          statusDot.classList.add("online");
-          statusText.textContent = "API en ligne";
-
-        } else {
-
-          statusDot.classList.remove("online");
-          statusText.textContent = "API indisponible";
-
-        }
-
-      } catch (error) {
-
-        statusDot.classList.remove("online");
-        statusText.textContent = "API inaccessible";
-
-      }
-
-    }
-
-    checkHealth();
-
-    setInterval(checkHealth, 30000);
+        selectedFile = file;
 
 
-    /*
-     * ============================================================
-     * FILE SELECTION
-     * ============================================================
-     */
-
-    dropZone.addEventListener("click", () => {
-      fileInput.click();
-    });
+        // Preview local
+        const reader =
+            new FileReader();
 
 
-    fileInput.addEventListener("change", () => {
+        reader.onload = event => {
 
-      if (fileInput.files.length > 0) {
+            previewImage.src =
+                event.target.result;
 
-        const file = fileInput.files[0];
-
-        if (file.type.startsWith("image/")) {
-          loadFile(file);
-        }
-
-      }
-
-    });
+            preview.style.display =
+                "block";
+        };
 
 
-    /*
-     * ============================================================
-     * DRAG & DROP
-     * ============================================================
-     */
-
-    dropZone.addEventListener("dragover", event => {
-
-      event.preventDefault();
-
-      dropZone.classList.add("dragover");
-
-    });
+        reader.readAsDataURL(
+            file
+        );
 
 
-    dropZone.addEventListener("dragleave", () => {
+        analyzeBtn.disabled =
+            false;
 
-      dropZone.classList.remove("dragover");
-
-    });
-
-
-    dropZone.addEventListener("drop", event => {
-
-      event.preventDefault();
-
-      dropZone.classList.remove("dragover");
-
-      const file =
-        event.dataTransfer.files[0];
-
-      if (
-        file &&
-        file.type &&
-        file.type.startsWith("image/")
-      ) {
-
-        loadFile(file);
-
-      }
-
-    });
+        resetBtn.style.display =
+            "block";
 
 
-    /*
-     * ============================================================
-     * LOAD FILE
-     * ============================================================
-     */
+        hideError();
 
-    function loadFile(file) {
-
-      selectedFile = file;
-
-      const url =
-        URL.createObjectURL(file);
-
-      previewImg.src = url;
-
-      previewName.textContent =
-        file.name;
-
-      previewSize.textContent =
-        formatSize(file.size);
-
-      preview.classList.add("visible");
-
-      btnAnalyze.disabled = false;
-
-      hideResult();
-
+        results.style.display =
+            "none";
     }
 
 
-    /*
-     * ============================================================
-     * FORMAT FILE SIZE
-     * ============================================================
-     */
+    // =====================================================
+    // ANALYZE
+    // =====================================================
 
-    function formatSize(bytes) {
-
-      if (bytes < 1024) {
-        return bytes + " B";
-      }
-
-      if (bytes < 1024 * 1024) {
-
-        return (
-          bytes / 1024
-        ).toFixed(1) + " KB";
-
-      }
-
-      return (
-        bytes / 1024 / 1024
-      ).toFixed(1) + " MB";
-
-    }
+    analyzeBtn.addEventListener(
+        "click",
+        analyzeImage
+    );
 
 
-    /*
-     * ============================================================
-     * CLEAR FILE
-     * ============================================================
-     */
-
-    btnClear.addEventListener("click", event => {
-
-      event.stopPropagation();
-
-      selectedFile = null;
-
-      fileInput.value = "";
-
-      preview.classList.remove("visible");
-
-      btnAnalyze.disabled = true;
-
-      hideResult();
-
-    });
-
-
-    /*
-     * ============================================================
-     * ANALYZE
-     * ============================================================
-     */
-
-    btnAnalyze.addEventListener(
-      "click",
-      async () => {
+    async function analyzeImage() {
 
         if (!selectedFile) {
-          return;
+
+            showError(
+                "Veuillez sélectionner une image."
+            );
+
+            return;
         }
 
-        btnAnalyze.classList.add("loading");
 
-        btnAnalyze.disabled = true;
+        // UI
+        analyzeBtn.disabled =
+            true;
 
-        hideResult();
+        loading.style.display =
+            "flex";
 
-        dropZone.classList.add("scanning");
+        results.style.display =
+            "none";
+
+        hideError();
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "file",
+            selectedFile
+        );
 
 
         try {
 
-          const formData =
-            new FormData();
+            const response =
+                await fetch(
+                    "/predict",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
 
-          formData.append(
-            "file",
-            selectedFile
-          );
+
+            const data =
+                await response.json();
 
 
-          const response =
-            await fetch("/predict", {
-              method: "POST",
-              body: formData
+            console.log(
+                "Réponse API :",
+                data
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    "Erreur pendant l'analyse."
+                );
+            }
+
+
+            // =================================================
+            // VÉRIFICATION DE LA RÉPONSE
+            // =================================================
+
+            if (
+                !data.faces ||
+                !Array.isArray(
+                    data.faces
+                )
+            ) {
+
+                throw new Error(
+                    "Format de réponse API invalide."
+                );
+            }
+
+
+            if (!data.image) {
+
+                throw new Error(
+                    "L'image annotée est absente de la réponse API."
+                );
+            }
+
+
+            // =================================================
+            // AFFICHAGE IMAGE ANNOTÉE
+            // =================================================
+
+            annotatedImage.src =
+                "data:image/jpeg;base64," +
+                data.image;
+
+
+            // =================================================
+            // AFFICHAGE RÉSULTATS
+            // =================================================
+
+            showResults(
+                data.faces
+            );
+
+
+            results.style.display =
+                "block";
+
+
+            // Scroll automatique
+            results.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
             });
-
-
-          const data =
-            await response.json();
-
-
-          console.log(
-            "Réponse API :",
-            data
-          );
-
-
-          if (!response.ok) {
-
-            throw new Error(
-              data.error ||
-              "Erreur du serveur"
-            );
-
-          }
-
-
-          /*
-           * ======================================================
-           * NOUVEAU FORMAT API
-           *
-           * {
-           *   "faces": [
-           *     {
-           *       "face": 1,
-           *       "emotion": "happy",
-           *       "confidence": 0.5164
-           *     },
-           *     {
-           *       "face": 2,
-           *       "emotion": "happy",
-           *       "confidence": 0.7294
-           *     }
-           *   ]
-           * }
-           * ======================================================
-           */
-
-          if (
-            data.faces &&
-            Array.isArray(data.faces) &&
-            data.faces.length > 0
-          ) {
-
-            showResults(data.faces);
-
-          } else {
-
-            showError(
-              data.error ||
-              "Aucun visage détecté"
-            );
-
-          }
 
 
         } catch (error) {
 
-          console.error(
-            "Erreur analyse :",
-            error
-          );
+            console.error(
+                "Erreur :",
+                error
+            );
 
-          showError(
-            error.message ||
-            "Impossible de joindre le serveur"
-          );
 
+            showError(
+                error.message ||
+                "Une erreur est survenue."
+            );
 
         } finally {
 
-          btnAnalyze.classList.remove(
-            "loading"
-          );
+            analyzeBtn.disabled =
+                false;
 
-          btnAnalyze.disabled = false;
+            loading.style.display =
+                "none";
+        }
+    }
 
-          dropZone.classList.remove(
-            "scanning"
-          );
 
+    // =====================================================
+    // SHOW RESULTS
+    // =====================================================
+
+    function showResults(
+        faces
+    ) {
+
+        faceResults.innerHTML =
+            "";
+
+
+        noFace.style.display =
+            "none";
+
+
+        // --------------------------------------------------
+        // 0 VISAGE
+        // --------------------------------------------------
+
+        if (
+            faces.length === 0
+        ) {
+
+            facesCount.textContent =
+                "0 visage";
+
+            noFace.style.display =
+                "block";
+
+            return;
         }
 
-      }
+
+        // --------------------------------------------------
+        // COUNT
+        // --------------------------------------------------
+
+        if (
+            faces.length === 1
+        ) {
+
+            facesCount.textContent =
+                "1 visage détecté";
+
+        } else {
+
+            facesCount.textContent =
+                faces.length +
+                " visages détectés";
+        }
+
+
+        // --------------------------------------------------
+        // CARDS
+        // --------------------------------------------------
+
+        faces.forEach(
+            face => {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+                card.className =
+                    "face-card";
+
+
+                const confidence =
+                    Number(
+                        face.confidence
+                    ) || 0;
+
+
+                const confidencePercent =
+                    (
+                        confidence * 100
+                    ).toFixed(1);
+
+
+                const emotion =
+                    formatEmotion(
+                        face.emotion
+                    );
+
+
+                const icon =
+                    getEmotionIcon(
+                        face.emotion
+                    );
+
+
+                card.innerHTML = `
+
+                    <div class="face-card-top">
+
+                        <span class="face-number">
+                            Visage ${escapeHtml(face.face)}
+                        </span>
+
+                        <span>
+                            ${icon}
+                        </span>
+
+                    </div>
+
+
+                    <div class="emotion">
+                        ${escapeHtml(emotion)}
+                    </div>
+
+
+                    <div class="confidence-label">
+
+                        <span>
+                            Confidence
+                        </span>
+
+                        <strong>
+                            ${confidencePercent}%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="confidence-bar">
+
+                        <div
+                            class="confidence-fill"
+                            style="
+                                width:
+                                ${confidencePercent}%;
+                            "
+                        ></div>
+
+                    </div>
+                `;
+
+
+                faceResults.appendChild(
+                    card
+                );
+            }
+        );
+    }
+
+
+    // =====================================================
+    // EMOTION ICON
+    // =====================================================
+
+    function getEmotionIcon(
+        emotion
+    ) {
+
+        const normalized =
+            String(
+                emotion || ""
+            ).toLowerCase();
+
+
+        const icons = {
+
+            anger: "😠",
+
+            fear: "😨",
+
+            happy: "😀",
+
+            neutral: "😐",
+
+            sad: "😢",
+
+            surprise: "😲"
+        };
+
+
+        return (
+            icons[normalized] ||
+            "🙂"
+        );
+    }
+
+
+    // =====================================================
+    // FORMAT EMOTION
+    // =====================================================
+
+    function formatEmotion(
+        emotion
+    ) {
+
+        if (!emotion) {
+
+            return "Unknown";
+        }
+
+
+        const text =
+            String(emotion);
+
+
+        return (
+            text
+                .charAt(0)
+                .toUpperCase() +
+            text
+                .slice(1)
+        );
+    }
+
+
+    // =====================================================
+    // RESET
+    // =====================================================
+
+    resetBtn.addEventListener(
+        "click",
+        resetApp
     );
 
 
-    /*
-     * ============================================================
-     * EMOTION ICON
-     * ============================================================
-     *
-     * Le backend renvoie par exemple :
-     *
-     * "happy"
-     *
-     * alors que le dictionnaire utilise :
-     *
-     * "Happy"
-     *
-     * Cette fonction permet donc de gérer les deux formats.
-     */
+    function resetApp() {
 
-    function getEmotionIcon(emotion) {
+        selectedFile =
+            null;
 
-      if (!emotion) {
-        return EMOTION_ICONS.default;
-      }
 
-      const normalized =
-        emotion.charAt(0).toUpperCase() +
-        emotion.slice(1).toLowerCase();
+        fileInput.value =
+            "";
 
-      return (
-        EMOTION_ICONS[normalized] ||
-        EMOTION_ICONS.default
-      );
 
+        previewImage.src =
+            "";
+
+
+        annotatedImage.src =
+            "";
+
+
+        preview.style.display =
+            "none";
+
+
+        results.style.display =
+            "none";
+
+
+        resetBtn.style.display =
+            "none";
+
+
+        analyzeBtn.disabled =
+            true;
+
+
+        faceResults.innerHTML =
+            "";
+
+
+        hideError();
     }
 
 
-    /*
-     * ============================================================
-     * FORMAT EMOTION
-     * ============================================================
-     */
+    // =====================================================
+    // ERROR
+    // =====================================================
 
-    function formatEmotion(emotion) {
+    function showError(
+        message
+    ) {
 
-      if (!emotion) {
-        return "Inconnue";
-      }
+        errorBox.textContent =
+            message;
 
-      return (
-        emotion.charAt(0).toUpperCase() +
-        emotion.slice(1).toLowerCase()
-      );
-
+        errorBox.style.display =
+            "block";
     }
 
 
-    /*
-     * ============================================================
-     * SHOW MULTIPLE RESULTS
-     * ============================================================
-     */
+    function hideError() {
 
-    function showResults(faces) {
+        errorBox.textContent =
+            "";
 
-      result.classList.remove("error");
-
-
-      /*
-       * Icône principale
-       */
-
-      emotionIcon.textContent =
-        getEmotionIcon(faces[0].emotion);
+        errorBox.style.display =
+            "none";
+    }
 
 
-      /*
-       * Sous-titre
-       */
+    // =====================================================
+    // SECURITY
+    // =====================================================
 
-      resultSubtitle.textContent =
-        faces.length === 1
-          ? "Émotion détectée"
-          : "Émotions détectées";
+    function escapeHtml(
+        value
+    ) {
 
-
-      /*
-       * Génération des cartes de visages
-       */
-
-      resultEmotion.innerHTML =
-        faces.map((face, index) => {
-
-          let percentage =
-            Number(face.confidence);
-
-
-          /*
-           * Le backend peut renvoyer :
-           *
-           * 0.5164
-           *
-           * ou :
-           *
-           * 51.64
-           */
-
-          if (
-            !Number.isFinite(percentage)
-          ) {
-
-            percentage = 0;
-
-          }
-
-
-          if (percentage <= 1) {
-            percentage *= 100;
-          }
-
-
-          percentage =
-            Math.max(
-              0,
-              Math.min(
-                100,
-                percentage
-              )
+        return String(value)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
             );
-
-
-          const emotion =
-            formatEmotion(
-              face.emotion
-            );
-
-
-          const icon =
-            getEmotionIcon(
-              face.emotion
-            );
-
-
-          const faceNumber =
-            face.face || index + 1;
-
-
-          return `
-
-            <div
-              class="face-result"
-              style="animation-delay: ${index * 0.08}s;"
-            >
-
-              <div class="face-result-header">
-
-                <span class="face-icon">
-                  ${icon}
-                </span>
-
-                <span class="face-number">
-                  Visage ${faceNumber}
-                </span>
-
-              </div>
-
-
-              <div class="face-emotion">
-                ${emotion}
-              </div>
-
-
-              <div class="face-confidence-top">
-
-                <span>
-                  Confiance du modèle
-                </span>
-
-                <span class="face-confidence-value">
-                  ${percentage.toFixed(1)}%
-                </span>
-
-              </div>
-
-
-              <div class="face-confidence-bar">
-
-                <div
-                  class="face-confidence-fill"
-                  style="width: ${percentage}%;"
-                ></div>
-
-              </div>
-
-            </div>
-
-          `;
-
-        }).join("");
-
-
-      /*
-       * Résumé général
-       */
-
-      confidenceValue.textContent =
-        faces.length === 1
-          ? "1 visage"
-          : `${faces.length} visages`;
-
-
-      confidenceFill.style.width = "100%";
-
-
-      /*
-       * Affichage
-       */
-
-      result.classList.add(
-        "visible"
-      );
-
     }
 
+</script>
 
-    /*
-     * ============================================================
-     * ERROR
-     * ============================================================
-     */
-
-    function showError(message) {
-
-      result.classList.add("error");
-
-      resultSubtitle.textContent =
-        "Résultat";
-
-      resultEmotion.innerHTML = `
-        <div style="
-          color: var(--red);
-          font-size: 18px;
-          font-weight: 700;
-          line-height: 1.4;
-        ">
-          ${escapeHtml(message)}
-        </div>
-      `;
-
-      emotionIcon.textContent =
-        "⚠️";
-
-      confidenceValue.textContent =
-        "Erreur";
-
-      confidenceFill.style.width =
-        "0%";
-
-      result.classList.add(
-        "visible"
-      );
-
-    }
-
-
-    /*
-     * ============================================================
-     * ESCAPE HTML
-     * ============================================================
-     *
-     * Évite d'injecter directement une erreur serveur
-     * dans le HTML.
-     */
-
-    function escapeHtml(value) {
-
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-    }
-
-
-    /*
-     * ============================================================
-     * HIDE RESULT
-     * ============================================================
-     */
-
-    function hideResult() {
-
-      result.classList.remove(
-        "visible",
-        "error"
-      );
-
-      confidenceFill.style.width =
-        "0%";
-
-      resultEmotion.innerHTML =
-        "—";
-
-      resultSubtitle.textContent =
-        "Émotions détectées";
-
-      emotionIcon.textContent =
-        "🤔";
-
-      confidenceValue.textContent =
-        "Analyse";
-
-    }
-
-  </script>
 
 </body>
+
 </html>
