@@ -1435,7 +1435,7 @@
 
                 <img
                     id="annotatedImage"
-                    alt="Image analysée avec détection des visages"
+                    alt="Image analyzed with face detection"
                 >
 
             </div>
@@ -1463,11 +1463,11 @@
                 </div>
 
                 <strong>
-                    Aucun visage détecté
+                    No faces detected
                 </strong>
 
                 <p style="margin-top:8px;">
-                    Essayez une autre image.
+                    Please try another image.
                 </p>
 
             </div>
@@ -1877,7 +1877,7 @@
         ) {
 
             facesCount.textContent =
-                "0 visage";
+                "0 face";
 
             noFace.style.display =
                 "block";
@@ -1895,13 +1895,13 @@
         ) {
 
             facesCount.textContent =
-                "1 visage détecté";
+                "1 face detected";
 
         } else {
 
             facesCount.textContent =
                 faces.length +
-                " visages détectés";
+                " faces detected";
         }
 
 
@@ -1950,7 +1950,7 @@
                     <div class="face-card-top">
 
                         <span class="face-number">
-                            Visage ${escapeHtml(face.face)}
+                            Face ${escapeHtml(face.face)}
                         </span>
 
                         <span>
