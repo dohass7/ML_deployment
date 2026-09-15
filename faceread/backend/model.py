@@ -166,7 +166,7 @@ def predict_emotion(pil_image):
             "face": idx,
             "emotion": emotion,
             "confidence": round(
-                confidence * 100,
+                confidence,
                 2
             )
         })
