@@ -25,6 +25,9 @@ from model import (
     check_status
 )
 
+from pillow_heif import register_heif_opener
+
+register_heif_opener()
 
 # ============================================================
 # FASTAPI
