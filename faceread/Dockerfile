@@ -2,7 +2,6 @@ FROM python:3.11-slim
 
 # ── Env ──────────────────────────────────────────────────────────
 ENV CUDA_VISIBLE_DEVICES=-1
-ENV TF_ENABLE_ONEDNN_OPTS=0
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
@@ -17,10 +16,14 @@ WORKDIR /app
 
 # ── Dépendances Python ────────────────────────────────────────────
 COPY backend/requirements.txt .
+
 RUN pip install --no-cache-dir -r requirements.txt
 
+# ── Télécharger le modèle ViT pendant le BUILD ───────────────────
+RUN python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='michaelgathara/vit-face-raf-db', local_dir='./vit-face-raf-db')"
+
 # ── Code source + frontend ────────────────────────────────────────
-COPY backend/app.py backend/model.py backend/best_model.h5 backend/face_detection_yunet_2023mar.onnx ./
+COPY backend/app.py backend/model.py backend/face_detection_yunet_2023mar.onnx ./
 COPY frontend/ ./frontend/
 
 # ── Port ──────────────────────────────────────────────────────────
