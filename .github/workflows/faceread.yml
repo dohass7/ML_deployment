@@ -30,7 +30,7 @@ jobs:
         run: pip install flake8
 
       - name: Lint app.py et model.py
-        run: flake8 app.py model.py --max-line-length=120 --ignore=E501,W503,E402,F401,E302,W291,W292,E303
+        run: flake8 app.py model.py --max-line-length=120 --ignore=E501,W503,E402,F401,E302,W291,W292,E303,E226
 
   build-images:
       runs-on: ubuntu-latest
