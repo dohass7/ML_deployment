@@ -8,140 +8,108 @@ from PIL import Image
 import numpy as np
 import cv2
 
-# ── Chargement du modèle ──
+# ── Chargement du modèle d'émotion ──
 model = keras.models.load_model("best_model.h5")
-
 labels = ['anger', 'fear', 'happy', 'neutral', 'sad', 'surprise']
 
-# ── Détecteur YuNet (chargé une seule fois) ──
+# ── Chargement du détecteur YuNet ──
 face_detector = cv2.FaceDetectorYN.create(
     "face_detection_yunet_2023mar.onnx",
     "",
     (320, 320),
-    0.5,
-    0.3,
-    5000
+    0.7,   # seuil de confiance
+    0.3,   # NMS
+    5000   # top_k
 )
 
 
-# ─────────────────────────────────────
-# ÉTAPE 1 : Prétraitement pour le modèle
-# ─────────────────────────────────────
-def preprocess_image(image_bgr):
-    """Reçoit une image BGR (numpy array) et retourne un tenseur prêt pour le modèle."""
-    # Convertir en niveaux de gris
-    if len(image_bgr.shape) == 3:
-        gray = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2GRAY)
-    else:
-        gray = image_bgr
-
-    # Resize à la taille du modèle
-    img = cv2.resize(gray, (128, 128))
-
-    # Normalisation
-    img = img.astype("float32") / 255.0
-
-    # Dimensions batch + canal
+def preprocess_image(pil_image):
+    """Reçoit un objet PIL.Image déjà ouvert."""
+    image = pil_image.convert("L")
+    img = np.array(image)
+    img = cv2.resize(img, (128, 128))
+    img = img / 255.0
     face_array = np.array(img).reshape(-1, 128, 128, 1)
     face = tf.keras.utils.normalize(face_array, axis=1)
     face_tf = tf.cast(face, tf.float32)
-
     return face_tf
 
 
-# ─────────────────────────────────────
-# ÉTAPE 2 : Détection des visages
-# ─────────────────────────────────────
-def detect_faces(image_bgr):
-    """Détecte les visages dans une image BGR. Retourne une liste de boxes (x, y, w, h)."""
-    H, W = image_bgr.shape[:2]
-
-    # Resize à 128×128 pour la détection
-    img_small = cv2.resize(image_bgr, (128, 128))
-    h_small, w_small = img_small.shape[:2]
-
-    # Facteurs d'échelle
-    scale_x = W / w_small
-    scale_y = H / h_small
-
-    # Détection
-    face_detector.setInputSize((w_small, h_small))
-    _, faces = face_detector.detect(img_small)
-
-    if faces is None:
-        return []
-
-    # Marge proportionnelle
-    margin = 0.2
-
-    boxes = []
-    for face in faces:
-        x, y, w_box, h_box = face[:4]
-
-        # Marge proportionnelle (sur l'échelle 128×128)
-        margin_x = w_box * margin / 2
-        margin_y = h_box * margin / 2
-
-        # Remise à l'échelle sur l'image originale
-        x_orig = int((x - margin_x) * scale_x)
-        y_orig = int((y - margin_y) * scale_y)
-        w_orig = int((w_box + margin_x * 2) * scale_x)
-        h_orig = int((h_box + margin_y * 2) * scale_y)
-
-        # Clamp
-        x_orig = max(0, x_orig)
-        y_orig = max(0, y_orig)
-        w_orig = min(w_orig, W - x_orig)
-        h_orig = min(h_orig, H - y_orig)
-
-        boxes.append((x_orig, y_orig, w_orig, h_orig))
-
-    return boxes
+def check_status():
+    if model is None:
+        return "model not loaded"
+    return f"ready ({len(model.layers)} layers)"
 
 
-# ─────────────────────────────────────
-# ÉTAPE 3 : Prédiction de l'émotion
-# ─────────────────────────────────────
 def predict_emotion(face_array):
-    """Prédit l'émotion à partir d'un tenseur prétraité."""
     preds = model.predict(face_array, verbose=0)
     emotion_class = preds.argmax()
     return labels[emotion_class]
 
 
-# ─────────────────────────────────────
-# FONCTION PRINCIPALE : tout-en-un
-# ─────────────────────────────────────
-def predict_faces(image_bgr):
-    """Détecte les visages et prédit l'émotion pour chacun.
-
-    Retourne une liste de dicts :
-    [{"box": (x, y, w, h), "emotion": "happy"}, ...]
+def detect_faces_and_predict(image_bgr, margin=0.1):
     """
-    boxes = detect_faces(image_bgr)
+    Détecte les visages dans une image et prédit l'émotion de chacun.
+
+    Args:
+        image_bgr : image OpenCV (BGR) — np.array
+        margin    : marge proportionnelle autour du visage (0.1 = 10 %)
+
+    Returns:
+        results : liste de dicts [{'box': (x, y, w, h), 'emotion': str}, ...]
+    """
+    H, W = image_bgr.shape[:2]
+
+    # ── Resize pour la détection ──
+    img_small = cv2.resize(image_bgr, (320, 320))
+    h_small, w_small = img_small.shape[:2]
+
+    # ── Détection ──
+    face_detector.setInputSize((w_small, h_small))
+    _, faces = face_detector.detect(img_small)
 
     results = []
-    for (x, y, w, h) in boxes:
-        roi = image_bgr[y:y+h, x:x+w]
+    if faces is None:
+        return results
 
+    # ── Facteurs d'échelle ──
+    scale_x = W / w_small
+    scale_y = H / h_small
+
+    for face in faces:
+        x, y, w_box, h_box = face[:4]
+
+        # Marge proportionnelle
+        margin_x = w_box * margin / 2
+        margin_y = h_box * margin / 2
+
+        x_new = max(0, x - margin_x)
+        y_new = max(0, y - margin_y)
+        w_new = min(w_small - x_new, w_box + margin_x * 2)
+        h_new = min(h_small - y_new, h_box + margin_y * 2)
+
+        # Remise à l'échelle
+        x_orig = int(x_new * scale_x)
+        y_orig = int(y_new * scale_y)
+        w_orig = int(w_new * scale_x)
+        h_orig = int(h_new * scale_y)
+
+        # Crop
+        roi = image_bgr[y_orig:y_orig+h_orig, x_orig:x_orig+w_orig]
         if roi.size == 0:
             continue
 
-        face_tf = preprocess_image(roi)
-        emotion = predict_emotion(face_tf)
+        # Prétraitement
+        roi_rgb = cv2.cvtColor(roi, cv2.COLOR_BGR2RGB)
+        roi_pil = Image.fromarray(roi_rgb)
+        face_input = preprocess_image(roi_pil)
+
+        # Prédiction
+        emotion = predict_emotion(face_input)
 
         results.append({
-            "box": (x, y, w, h),
+            "box": (x_orig, y_orig, w_orig, h_orig),
             "emotion": emotion,
         })
 
     return results
-
-
-# ─────────────────────────────────────
-# HEALTH CHECK
-# ─────────────────────────────────────
-def check_status():
-    if model is None:
-        return "model not loaded"
-    return f"ready ({len(model.layers)} layers)"
