@@ -14,6 +14,11 @@ from transformers import (
     ViTForImageClassification
 )
 
+from pillow_heif import register_heif_opener
+
+# 1. Enregistre le support HEIC auprès de Pillow (à faire une seule fois)
+register_heif_opener()
+
 # ============================================================
 # Chargement modèle ViT
 # ============================================================
