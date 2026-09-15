@@ -152,7 +152,7 @@ async def predict(
 
         image = Image.open(
             io.BytesIO(contents)
-        ).convert("RGB")
+        )
 
         # Force le chargement de l'image
         image.load()

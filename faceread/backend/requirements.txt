@@ -1,8 +1,10 @@
 fastapi
 uvicorn
-tensorflow==2.20.0
+#tensorflow==2.20.0
 opencv-python-headless
 numpy
 python-multipart
 pillow
-
+torch
+transformers
+huggingface-hub
