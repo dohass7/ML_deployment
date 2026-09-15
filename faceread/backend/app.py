@@ -48,10 +48,12 @@ async def health_check():
 async def predict(file: UploadFile = File(...)):
     contents = await file.read()
 
-    image = Image.open(io.BytesIO(contents))
+    image = Image.open(
+        io.BytesIO(contents)
+    )
 
-    emotion = predict_emotion(image)
+    results = predict_emotion(image)
 
     return {
-        "emotion": emotion
+        "faces": results
     }

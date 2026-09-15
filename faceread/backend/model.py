@@ -45,42 +45,31 @@ def predict_emotion(pil_image):
 
     img_small = cv2.resize(img, (320, 320))
 
-    h_small, w_small = img_small.shape[:2]
-
-    face_detector.setInputSize((w_small, h_small))
+    face_detector.setInputSize((320, 320))
 
     _, faces = face_detector.detect(img_small)
 
-    if faces is None or len(faces) == 0:
-        return "no_face"
-    print("Nombre de visages détectés :", 0 if faces is None else len(faces))
-    scale_x = W / w_small
-    scale_y = H / h_small
+    print(
+        "Nombre de visages détectés :",
+        0 if faces is None else len(faces)
+    )
 
-    #face = faces[0]
+    if faces is None:
+        return []
 
     results = []
+
+    scale_x = W / 320
+    scale_y = H / 320
 
     for i, face in enumerate(faces, start=1):
 
         x, y, w_box, h_box = face[:4]
 
-        margin = 0.1
-
-        margin_x = w_box * margin / 2
-        margin_y = h_box * margin / 2
-
-        x_new = max(0, x - margin_x)
-        y_new = max(0, y - margin_y)
-
-        w_new = min(w_small - x_new, w_box + margin_x * 2)
-        h_new = min(h_small - y_new, h_box + margin_y * 2)
-
-        x_orig = int(x_new * scale_x)
-        y_orig = int(y_new * scale_y)
-
-        w_orig = int(w_new * scale_x)
-        h_orig = int(h_new * scale_y)
+        x_orig = int(x * scale_x)
+        y_orig = int(y * scale_y)
+        w_orig = int(w_box * scale_x)
+        h_orig = int(h_box * scale_y)
 
         roi = img[
             y_orig:y_orig+h_orig,
@@ -88,7 +77,7 @@ def predict_emotion(pil_image):
         ]
 
         if roi.size == 0:
-            return "invalid_face"
+            continue
 
         roi_gray = cv2.cvtColor(
             roi,
@@ -101,8 +90,7 @@ def predict_emotion(pil_image):
         )
 
         face_input = (
-            face_input.astype("float32")
-            / 255.0
+            face_input.astype("float32") / 255.0
         )
 
         face_input = np.expand_dims(
@@ -115,11 +103,25 @@ def predict_emotion(pil_image):
             axis=0
         )
 
-        pred = model.predict(face_input, verbose=0)
+        pred = model.predict(
+            face_input,
+            verbose=0
+        )
 
-        emotion = labels[np.argmax(pred)]
+        emotion_index = np.argmax(pred)
+
+        emotion = labels[emotion_index]
+
+        confidence = float(np.max(pred))
+
+        print(
+            f"Visage {i} : {emotion} ({confidence:.2%})"
+        )
 
         results.append({
             "face": i,
-            "emotion": emotion
+            "emotion": emotion,
+            "confidence": confidence
         })
+
+    return results
