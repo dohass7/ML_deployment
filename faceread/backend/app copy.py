@@ -8,9 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import io
 from PIL import Image
-import numpy as np
-import cv2
-from model import predict_emotion, check_status, preprocess_image, predict_faces
+from model import predict_emotion, check_status, preprocess_image
 
 app = FastAPI(title="Face Emotion API")
 
@@ -22,7 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Servir le frontend
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 
@@ -47,22 +44,9 @@ async def health_check():
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     contents = await file.read()
-    nparr = np.frombuffer(contents, np.uint8)
-    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)  # ← BGR
+    image = Image.open(io.BytesIO(contents))
 
-    if img is None:
-        return {"error": "Image invalide ou non lisible"}
+    face_tf = preprocess_image(image)
 
-    # Détecter + prédire pour chaque visage
-    results = predict_faces(img)
-
-    if not results:
-        return {"error": "Aucun visage détecté"}
-
-    # Retourner le premier visage (ou tous)
-    return {
-        "faces": [
-            {"emotion": r["emotion"], "box": r["box"]}
-            for r in results
-        ]
-    }
+    emotion = predict_emotion(face_tf)
+    return {"emotion": emotion}

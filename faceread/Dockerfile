@@ -20,7 +20,7 @@ COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # ── Code source + frontend ────────────────────────────────────────
-COPY backend/app.py backend/model.py backend/best_model.h5 ./
+COPY backend/app.py backend/model.py backend/best_model.h5 backend/face_detection_yunet_2023mar.onnx ./
 COPY frontend/ ./frontend/
 
 # ── Port ──────────────────────────────────────────────────────────
