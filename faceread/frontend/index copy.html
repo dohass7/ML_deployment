@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,18 +7,11 @@
   <title>FaceRead — Emotion Intelligence</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg: #07070b;
@@ -42,9 +34,7 @@
       --mono: "DM Mono", monospace;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       min-height: 100vh;
@@ -82,17 +72,8 @@
       z-index: 0;
     }
 
-    .ambient.one {
-      background: var(--purple);
-      top: -300px;
-      left: -200px;
-    }
-
-    .ambient.two {
-      background: var(--accent);
-      right: -250px;
-      bottom: -250px;
-    }
+    .ambient.one { background: var(--purple); top: -300px; left: -200px; }
+    .ambient.two { background: var(--accent); right: -250px; bottom: -250px; }
 
     .app {
       position: relative;
@@ -112,11 +93,7 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .brand { display: flex; align-items: center; gap: 12px; }
 
     .brand-mark {
       width: 38px;
@@ -137,20 +114,11 @@
       letter-spacing: -.04em;
     }
 
-    .brand-name span {
-      color: var(--accent);
-    }
+    .brand-name span { color: var(--accent); }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-    }
+    .header-right { display: flex; align-items: center; gap: 18px; }
 
-    .version {
-      color: var(--muted);
-      font: 11px var(--mono);
-    }
+    .version { color: var(--muted); font: 11px var(--mono); }
 
     .status {
       display: flex;
@@ -179,10 +147,7 @@
       box-shadow: 0 0 12px var(--accent);
     }
 
-    .hero {
-      padding: 75px 0 50px;
-      text-align: center;
-    }
+    .hero { padding: 75px 0 50px; text-align: center; }
 
     .eyebrow {
       display: inline-flex;
@@ -216,9 +181,7 @@
       font-weight: 800;
     }
 
-    h1 .highlight {
-      color: var(--accent);
-    }
+    h1 .highlight { color: var(--accent); }
 
     .hero-description {
       max-width: 590px;
@@ -254,15 +217,9 @@
       margin-bottom: 22px;
     }
 
-    .workspace-title {
-      font-size: 13px;
-      font-weight: 700;
-    }
+    .workspace-title { font-size: 13px; font-weight: 700; }
 
-    .workspace-meta {
-      color: var(--muted);
-      font: 10px var(--mono);
-    }
+    .workspace-meta { color: var(--muted); font: 10px var(--mono); }
 
     .drop-zone {
       position: relative;
@@ -291,9 +248,7 @@
       transform: translateY(-1px);
     }
 
-    .drop-zone input {
-      display: none;
-    }
+    .drop-zone input { display: none; }
 
     .upload-icon {
       width: 72px;
@@ -314,11 +269,7 @@
       box-shadow: 0 0 35px rgba(185,255,61,.08);
     }
 
-    .upload-title {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
+    .upload-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
 
     .upload-subtitle {
       color: var(--muted);
@@ -326,11 +277,7 @@
       line-height: 1.8;
     }
 
-    .upload-formats {
-      margin-top: 18px;
-      display: flex;
-      gap: 7px;
-    }
+    .upload-formats { margin-top: 18px; display: flex; gap: 7px; }
 
     .format {
       padding: 5px 8px;
@@ -352,14 +299,9 @@
       gap: 15px;
     }
 
-    .preview.visible {
-      display: flex;
-    }
+    .preview.visible { display: flex; }
 
-    .preview-image-wrapper {
-      position: relative;
-      flex-shrink: 0;
-    }
+    .preview-image-wrapper { position: relative; flex-shrink: 0; }
 
     .preview-image {
       width: 70px;
@@ -385,10 +327,7 @@
       border: 2px solid var(--surface);
     }
 
-    .preview-info {
-      flex: 1;
-      min-width: 0;
-    }
+    .preview-info { flex: 1; min-width: 0; }
 
     .preview-name {
       font-size: 12px;
@@ -397,11 +336,7 @@
       text-overflow: ellipsis;
     }
 
-    .preview-size {
-      margin-top: 5px;
-      color: var(--muted);
-      font: 10px var(--mono);
-    }
+    .preview-size { margin-top: 5px; color: var(--muted); font: 10px var(--mono); }
 
     .clear-btn {
       padding: 8px 12px;
@@ -414,10 +349,7 @@
       transition: .2s;
     }
 
-    .clear-btn:hover {
-      color: var(--red);
-      border-color: rgba(255,92,92,.4);
-    }
+    .clear-btn:hover { color: var(--red); border-color: rgba(255,92,92,.4); }
 
     .analyze-btn {
       position: relative;
@@ -442,14 +374,9 @@
       box-shadow: 0 15px 40px rgba(185,255,61,.18);
     }
 
-    .analyze-btn:active:not(:disabled) {
-      transform: translateY(0);
-    }
+    .analyze-btn:active:not(:disabled) { transform: translateY(0); }
 
-    .analyze-btn:disabled {
-      opacity: .3;
-      cursor: not-allowed;
-    }
+    .analyze-btn:disabled { opacity: .3; cursor: not-allowed; }
 
     .btn-content {
       display: flex;
@@ -458,14 +385,9 @@
       gap: 10px;
     }
 
-    .btn-arrow {
-      font-size: 17px;
-      transition: .25s;
-    }
+    .btn-arrow { font-size: 17px; transition: .25s; }
 
-    .analyze-btn:hover .btn-arrow {
-      transform: translateX(4px);
-    }
+    .analyze-btn:hover .btn-arrow { transform: translateX(4px); }
 
     .spinner {
       display: none;
@@ -477,20 +399,10 @@
       animation: spin .7s linear infinite;
     }
 
-    .analyze-btn.loading .btn-content {
-      display: none;
-    }
+    .analyze-btn.loading .btn-content { display: none; }
+    .analyze-btn.loading .spinner { display: block; margin: auto; }
 
-    .analyze-btn.loading .spinner {
-      display: block;
-      margin: auto;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .scan-overlay {
       position: absolute;
@@ -500,9 +412,7 @@
       transition: .3s;
     }
 
-    .drop-zone.scanning .scan-overlay {
-      opacity: 1;
-    }
+    .drop-zone.scanning .scan-overlay { opacity: 1; }
 
     .scan-line {
       position: absolute;
@@ -515,28 +425,11 @@
     }
 
     @keyframes scan {
-      0% {
-        top: 10%;
-        opacity: 0;
-      }
-
-      15% {
-        opacity: 1;
-      }
-
-      50% {
-        top: 90%;
-        opacity: 1;
-      }
-
-      85% {
-        opacity: 1;
-      }
-
-      100% {
-        top: 10%;
-        opacity: 0;
-      }
+      0% { top: 10%; opacity: 0; }
+      15% { opacity: 1; }
+      50% { top: 90%; opacity: 1; }
+      85% { opacity: 1; }
+      100% { top: 10%; opacity: 0; }
     }
 
     .result {
@@ -551,9 +444,7 @@
       animation: resultIn .45s ease both;
     }
 
-    .result.visible {
-      display: block;
-    }
+    .result.visible { display: block; }
 
     .result.error {
       border-color: rgba(255,92,92,.25);
@@ -561,15 +452,8 @@
     }
 
     @keyframes resultIn {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .result-header {
@@ -595,11 +479,7 @@
       border: 1px solid rgba(185,255,61,.12);
     }
 
-    .result-main {
-      display: flex;
-      align-items: flex-start;
-      gap: 22px;
-    }
+    .result-main { display: flex; align-items: center; gap: 22px; }
 
     .emotion-icon {
       width: 78px;
@@ -615,107 +495,25 @@
     }
 
     @keyframes pop {
-      from {
-        transform: scale(.6) rotate(-10deg);
-        opacity: 0;
-      }
-
-      to {
-        transform: scale(1) rotate(0);
-        opacity: 1;
-      }
+      from { transform: scale(.6) rotate(-10deg); opacity: 0; }
+      to { transform: scale(1) rotate(0); opacity: 1; }
     }
 
     .emotion-name {
-      width: 100%;
-      font-size: 18px;
+      font-size: clamp(34px, 7vw, 52px);
       line-height: 1;
       font-weight: 800;
+      letter-spacing: -.05em;
+      color: var(--accent);
+    }
+
+    .error .emotion-name {
+      font-size: 18px;
+      color: var(--red);
       letter-spacing: -.02em;
     }
 
-    .face-result {
-      margin-bottom: 14px;
-      padding: 16px;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 13px;
-      background: rgba(255,255,255,.025);
-      animation: faceIn .4s ease both;
-    }
-
-    .face-result:last-child {
-      margin-bottom: 0;
-    }
-
-    @keyframes faceIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .face-result-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 9px;
-    }
-
-    .face-icon {
-      font-size: 23px;
-    }
-
-    .face-number {
-      color: var(--muted);
-      font: 10px var(--mono);
-      text-transform: uppercase;
-      letter-spacing: .1em;
-    }
-
-    .face-emotion {
-      font-size: 28px;
-      font-weight: 800;
-      line-height: 1.1;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-
-    .face-confidence-top {
-      display: flex;
-      justify-content: space-between;
-      color: var(--muted);
-      font: 9px var(--mono);
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      margin-bottom: 7px;
-    }
-
-    .face-confidence-value {
-      color: var(--text);
-    }
-
-    .face-confidence-bar {
-      height: 5px;
-      background: rgba(255,255,255,.06);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-
-    .face-confidence-fill {
-      height: 100%;
-      background: var(--accent);
-      border-radius: inherit;
-      box-shadow: 0 0 15px rgba(185,255,61,.35);
-    }
-
-    .confidence {
-      margin-top: 25px;
-    }
+    .confidence { margin-top: 25px; }
 
     .confidence-top {
       display: flex;
@@ -727,9 +525,7 @@
       letter-spacing: .1em;
     }
 
-    .confidence-value {
-      color: var(--text);
-    }
+    .confidence-value { color: var(--text); }
 
     .confidence-bar {
       height: 5px;
@@ -757,44 +553,17 @@
       letter-spacing: .08em;
     }
 
-    footer strong {
-      color: var(--text);
-      font-weight: 400;
-    }
+    footer strong { color: var(--text); font-weight: 400; }
 
     @media (max-width: 650px) {
-      .app {
-        width: min(100% - 24px, 1100px);
-      }
-
-      header {
-        height: 75px;
-      }
-
-      .version {
-        display: none;
-      }
-
-      .hero {
-        padding: 55px 0 35px;
-      }
-
-      h1 {
-        font-size: 45px;
-      }
-
-      .hero-description {
-        font-size: 13px;
-      }
-
-      .workspace-inner {
-        padding: 16px;
-      }
-
-      .drop-zone {
-        min-height: 280px;
-      }
-
+      .app { width: min(100% - 24px, 1100px); }
+      header { height: 75px; }
+      .version { display: none; }
+      .hero { padding: 55px 0 35px; }
+      h1 { font-size: 45px; }
+      .hero-description { font-size: 13px; }
+      .workspace-inner { padding: 16px; }
+      .drop-zone { min-height: 280px; }
       footer {
         flex-direction: column;
         gap: 10px;
@@ -803,37 +572,19 @@
     }
 
     @media (max-width: 420px) {
-      .header-right .status {
-        padding: 7px 9px;
-      }
-
+      .header-right .status { padding: 7px 9px; }
       .workspace-top {
         align-items: flex-start;
         flex-direction: column;
         gap: 5px;
       }
-
       .result-main {
         align-items: flex-start;
         flex-direction: column;
       }
-
-      .emotion-icon {
-        width: 65px;
-        height: 65px;
-      }
-
-      .preview {
-        gap: 10px;
-      }
-
-      .clear-btn {
-        padding: 7px 8px;
-      }
-
-      .face-emotion {
-        font-size: 24px;
-      }
+      .emotion-icon { width: 65px; height: 65px; }
+      .preview { gap: 10px; }
+      .clear-btn { padding: 7px 8px; }
     }
   </style>
 </head>
@@ -849,7 +600,6 @@
     <header>
       <div class="brand">
         <div class="brand-mark">F</div>
-
         <div class="brand-name">
           Face<span>Read</span>
         </div>
@@ -879,9 +629,8 @@
       </h1>
 
       <p class="hero-description">
-        Importez une image contenant un ou plusieurs visages
-        et laissez notre modèle d'intelligence artificielle
-        analyser les émotions détectées.
+        Importez une image contenant un visage et laissez notre modèle
+        d'intelligence artificielle analyser l'émotion détectée.
       </p>
 
     </section>
@@ -892,7 +641,6 @@
       <div class="workspace-inner">
 
         <div class="workspace-top">
-
           <div class="workspace-title">
             Analyse faciale
           </div>
@@ -900,7 +648,6 @@
           <div class="workspace-meta">
             IMAGE → MODEL → EMOTION
           </div>
-
         </div>
 
         <!-- DROP ZONE -->
@@ -922,7 +669,7 @@
 
           <div class="upload-subtitle">
             Cliquez pour parcourir ou glissez-déposez<br />
-            une photo contenant un ou plusieurs visages
+            une photo contenant un visage
           </div>
 
           <div class="upload-formats">
@@ -942,7 +689,6 @@
         <div class="preview" id="preview">
 
           <div class="preview-image-wrapper">
-
             <img
               class="preview-image"
               id="previewImg"
@@ -953,11 +699,9 @@
             <div class="preview-check">
               ✓
             </div>
-
           </div>
 
           <div class="preview-info">
-
             <div class="preview-name" id="previewName">
               —
             </div>
@@ -965,14 +709,9 @@
             <div class="preview-size" id="previewSize">
               —
             </div>
-
           </div>
 
-          <button
-            class="clear-btn"
-            id="btnClear"
-            type="button"
-          >
+          <button class="clear-btn" id="btnClear">
             Effacer
           </button>
 
@@ -982,17 +721,14 @@
         <button
           class="analyze-btn"
           id="btnAnalyze"
-          type="button"
           disabled
         >
-
           <div class="btn-content">
-            <span>Analyser les émotions</span>
+            <span>Analyser l'émotion</span>
             <span class="btn-arrow">→</span>
           </div>
 
           <div class="spinner"></div>
-
         </button>
 
         <!-- RESULT -->
@@ -1016,31 +752,22 @@
               🤔
             </div>
 
-            <div style="width: 100%;">
-
-              <div class="result-label" id="resultSubtitle">
-                Émotions détectées
+            <div>
+              <div class="result-label">
+                Émotion détectée
               </div>
 
-              <div
-                class="emotion-name"
-                id="resultEmotion"
-              >
+              <div class="emotion-name" id="resultEmotion">
                 —
               </div>
-
             </div>
 
           </div>
 
-          <!-- SUMMARY -->
           <div class="confidence">
 
             <div class="confidence-top">
-
-              <span>
-                Résultat de l'analyse
-              </span>
+              <span>Confiance du modèle</span>
 
               <span
                 class="confidence-value"
@@ -1048,16 +775,13 @@
               >
                 Analyse
               </span>
-
             </div>
 
             <div class="confidence-bar">
-
               <div
                 class="confidence-fill"
                 id="confidenceFill"
               ></div>
-
             </div>
 
           </div>
@@ -1089,12 +813,6 @@
 
   <script>
 
-    /*
-     * ============================================================
-     * EMOTIONS
-     * ============================================================
-     */
-
     const EMOTION_ICONS = {
       Angry: "😠",
       Fear: "😨",
@@ -1106,48 +824,20 @@
       default: "🤔"
     };
 
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
 
-    /*
-     * ============================================================
-     * DOM
-     * ============================================================
-     */
+    const preview = document.getElementById("preview");
+    const previewImg = document.getElementById("previewImg");
+    const previewName = document.getElementById("previewName");
+    const previewSize = document.getElementById("previewSize");
 
-    const dropZone =
-      document.getElementById("dropZone");
+    const btnClear = document.getElementById("btnClear");
+    const btnAnalyze = document.getElementById("btnAnalyze");
 
-    const fileInput =
-      document.getElementById("fileInput");
-
-    const preview =
-      document.getElementById("preview");
-
-    const previewImg =
-      document.getElementById("previewImg");
-
-    const previewName =
-      document.getElementById("previewName");
-
-    const previewSize =
-      document.getElementById("previewSize");
-
-    const btnClear =
-      document.getElementById("btnClear");
-
-    const btnAnalyze =
-      document.getElementById("btnAnalyze");
-
-    const result =
-      document.getElementById("result");
-
-    const resultEmotion =
-      document.getElementById("resultEmotion");
-
-    const emotionIcon =
-      document.getElementById("emotionIcon");
-
-    const resultSubtitle =
-      document.getElementById("resultSubtitle");
+    const result = document.getElementById("result");
+    const resultEmotion = document.getElementById("resultEmotion");
+    const emotionIcon = document.getElementById("emotionIcon");
 
     const confidenceFill =
       document.getElementById("confidenceFill");
@@ -1161,26 +851,10 @@
     const statusText =
       document.getElementById("statusText");
 
-
-    /*
-     * ============================================================
-     * STATE
-     * ============================================================
-     */
-
     let selectedFile = null;
 
-
-    /*
-     * ============================================================
-     * HEALTH CHECK
-     * ============================================================
-     */
-
     async function checkHealth() {
-
       try {
-
         const response = await fetch("/health", {
           method: "GET",
           cache: "no-store"
@@ -1193,623 +867,156 @@
         const data = await response.json();
 
         if (data.status === "healthy") {
-
           statusDot.classList.add("online");
           statusText.textContent = "API en ligne";
-
         } else {
-
           statusDot.classList.remove("online");
           statusText.textContent = "API indisponible";
-
         }
-
       } catch (error) {
-
         statusDot.classList.remove("online");
         statusText.textContent = "API inaccessible";
-
       }
-
     }
 
     checkHealth();
-
     setInterval(checkHealth, 30000);
-
-
-    /*
-     * ============================================================
-     * FILE SELECTION
-     * ============================================================
-     */
 
     dropZone.addEventListener("click", () => {
       fileInput.click();
     });
 
-
     fileInput.addEventListener("change", () => {
-
       if (fileInput.files.length > 0) {
-
         const file = fileInput.files[0];
-
         if (file.type.startsWith("image/")) {
           loadFile(file);
         }
-
       }
-
     });
-
-
-    /*
-     * ============================================================
-     * DRAG & DROP
-     * ============================================================
-     */
 
     dropZone.addEventListener("dragover", event => {
-
       event.preventDefault();
-
       dropZone.classList.add("dragover");
-
     });
-
 
     dropZone.addEventListener("dragleave", () => {
-
       dropZone.classList.remove("dragover");
-
     });
-
 
     dropZone.addEventListener("drop", event => {
-
       event.preventDefault();
-
       dropZone.classList.remove("dragover");
+      const file = event.dataTransfer.files[0];
 
-      const file =
-        event.dataTransfer.files[0];
-
-      if (
-        file &&
-        file.type &&
-        file.type.startsWith("image/")
-      ) {
-
+      if (file && file.type && file.type.startsWith("image/")) {
         loadFile(file);
-
       }
-
     });
-
-
-    /*
-     * ============================================================
-     * LOAD FILE
-     * ============================================================
-     */
 
     function loadFile(file) {
-
       selectedFile = file;
-
-      const url =
-        URL.createObjectURL(file);
-
+      const url = URL.createObjectURL(file);
       previewImg.src = url;
-
-      previewName.textContent =
-        file.name;
-
-      previewSize.textContent =
-        formatSize(file.size);
-
+      previewName.textContent = file.name;
+      previewSize.textContent = formatSize(file.size);
       preview.classList.add("visible");
-
       btnAnalyze.disabled = false;
-
       hideResult();
-
     }
-
-
-    /*
-     * ============================================================
-     * FORMAT FILE SIZE
-     * ============================================================
-     */
 
     function formatSize(bytes) {
-
-      if (bytes < 1024) {
-        return bytes + " B";
-      }
-
+      if (bytes < 1024) return bytes + " B";
       if (bytes < 1024 * 1024) {
-
-        return (
-          bytes / 1024
-        ).toFixed(1) + " KB";
-
+        return (bytes / 1024).toFixed(1) + " KB";
       }
-
-      return (
-        bytes / 1024 / 1024
-      ).toFixed(1) + " MB";
-
+      return (bytes / 1024 / 1024).toFixed(1) + " MB";
     }
-
-
-    /*
-     * ============================================================
-     * CLEAR FILE
-     * ============================================================
-     */
 
     btnClear.addEventListener("click", event => {
-
       event.stopPropagation();
-
       selectedFile = null;
-
       fileInput.value = "";
-
       preview.classList.remove("visible");
-
       btnAnalyze.disabled = true;
-
       hideResult();
-
     });
 
+    btnAnalyze.addEventListener("click", async () => {
+      if (!selectedFile) return;
 
-    /*
-     * ============================================================
-     * ANALYZE
-     * ============================================================
-     */
+      btnAnalyze.classList.add("loading");
+      btnAnalyze.disabled = true;
+      hideResult();
+      dropZone.classList.add("scanning");
 
-    btnAnalyze.addEventListener(
-      "click",
-      async () => {
+      try {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
 
-        if (!selectedFile) {
-          return;
+        const response = await fetch("/predict", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Erreur du serveur");
         }
 
-        btnAnalyze.classList.add("loading");
-
-        btnAnalyze.disabled = true;
-
-        hideResult();
-
-        dropZone.classList.add("scanning");
-
-
-        try {
-
-          const formData =
-            new FormData();
-
-          formData.append(
-            "file",
-            selectedFile
-          );
-
-
-          const response =
-            await fetch("/predict", {
-              method: "POST",
-              body: formData
-            });
-
-
-          const data =
-            await response.json();
-
-
-          console.log(
-            "Réponse API :",
-            data
-          );
-
-
-          if (!response.ok) {
-
-            throw new Error(
-              data.error ||
-              "Erreur du serveur"
-            );
-
-          }
-
-
-          /*
-           * ======================================================
-           * NOUVEAU FORMAT API
-           *
-           * {
-           *   "faces": [
-           *     {
-           *       "face": 1,
-           *       "emotion": "happy",
-           *       "confidence": 0.5164
-           *     },
-           *     {
-           *       "face": 2,
-           *       "emotion": "happy",
-           *       "confidence": 0.7294
-           *     }
-           *   ]
-           * }
-           * ======================================================
-           */
-
-          if (
-            data.faces &&
-            Array.isArray(data.faces) &&
-            data.faces.length > 0
-          ) {
-
-            showResults(data.faces);
-
-          } else {
-
-            showError(
-              data.error ||
-              "Aucun visage détecté"
-            );
-
-          }
-
-
-        } catch (error) {
-
-          console.error(
-            "Erreur analyse :",
-            error
-          );
-
-          showError(
-            error.message ||
-            "Impossible de joindre le serveur"
-          );
-
-
-        } finally {
-
-          btnAnalyze.classList.remove(
-            "loading"
-          );
-
-          btnAnalyze.disabled = false;
-
-          dropZone.classList.remove(
-            "scanning"
-          );
-
+        if (data.emotion) {
+          showResult(data.emotion, data.confidence);
+        } else {
+          showError(data.error || "Aucune émotion détectée");
         }
-
+      } catch (error) {
+        console.error(error);
+        showError(error.message || "Impossible de joindre le serveur");
+      } finally {
+        btnAnalyze.classList.remove("loading");
+        btnAnalyze.disabled = false;
+        dropZone.classList.remove("scanning");
       }
-    );
+    });
 
-
-    /*
-     * ============================================================
-     * EMOTION ICON
-     * ============================================================
-     *
-     * Le backend renvoie par exemple :
-     *
-     * "happy"
-     *
-     * alors que le dictionnaire utilise :
-     *
-     * "Happy"
-     *
-     * Cette fonction permet donc de gérer les deux formats.
-     */
-
-    function getEmotionIcon(emotion) {
-
-      if (!emotion) {
-        return EMOTION_ICONS.default;
-      }
-
-      const normalized =
-        emotion.charAt(0).toUpperCase() +
-        emotion.slice(1).toLowerCase();
-
-      return (
-        EMOTION_ICONS[normalized] ||
-        EMOTION_ICONS.default
-      );
-
-    }
-
-
-    /*
-     * ============================================================
-     * FORMAT EMOTION
-     * ============================================================
-     */
-
-    function formatEmotion(emotion) {
-
-      if (!emotion) {
-        return "Inconnue";
-      }
-
-      return (
-        emotion.charAt(0).toUpperCase() +
-        emotion.slice(1).toLowerCase()
-      );
-
-    }
-
-
-    /*
-     * ============================================================
-     * SHOW MULTIPLE RESULTS
-     * ============================================================
-     */
-
-    function showResults(faces) {
-
+    function showResult(emotion, confidence = null) {
       result.classList.remove("error");
-
-
-      /*
-       * Icône principale
-       */
-
+      resultEmotion.textContent = emotion;
       emotionIcon.textContent =
-        getEmotionIcon(faces[0].emotion);
+        EMOTION_ICONS[emotion] || EMOTION_ICONS.default;
+      result.classList.add("visible");
 
+      if (typeof confidence === "number") {
+        let percentage = confidence;
+        if (confidence <= 1) percentage = confidence * 100;
+        percentage = Math.max(0, Math.min(100, percentage));
 
-      /*
-       * Sous-titre
-       */
+        confidenceValue.textContent = percentage.toFixed(1) + "%";
 
-      resultSubtitle.textContent =
-        faces.length === 1
-          ? "Émotion détectée"
-          : "Émotions détectées";
-
-
-      /*
-       * Génération des cartes de visages
-       */
-
-      resultEmotion.innerHTML =
-        faces.map((face, index) => {
-
-          let percentage =
-            Number(face.confidence);
-
-
-          /*
-           * Le backend peut renvoyer :
-           *
-           * 0.5164
-           *
-           * ou :
-           *
-           * 51.64
-           */
-
-          if (
-            !Number.isFinite(percentage)
-          ) {
-
-            percentage = 0;
-
-          }
-
-
-          if (percentage <= 1) {
-            percentage *= 100;
-          }
-
-
-          percentage =
-            Math.max(
-              0,
-              Math.min(
-                100,
-                percentage
-              )
-            );
-
-
-          const emotion =
-            formatEmotion(
-              face.emotion
-            );
-
-
-          const icon =
-            getEmotionIcon(
-              face.emotion
-            );
-
-
-          const faceNumber =
-            face.face || index + 1;
-
-
-          return `
-
-            <div
-              class="face-result"
-              style="animation-delay: ${index * 0.08}s;"
-            >
-
-              <div class="face-result-header">
-
-                <span class="face-icon">
-                  ${icon}
-                </span>
-
-                <span class="face-number">
-                  Visage ${faceNumber}
-                </span>
-
-              </div>
-
-
-              <div class="face-emotion">
-                ${emotion}
-              </div>
-
-
-              <div class="face-confidence-top">
-
-                <span>
-                  Confiance du modèle
-                </span>
-
-                <span class="face-confidence-value">
-                  ${percentage.toFixed(1)}%
-                </span>
-
-              </div>
-
-
-              <div class="face-confidence-bar">
-
-                <div
-                  class="face-confidence-fill"
-                  style="width: ${percentage}%;"
-                ></div>
-
-              </div>
-
-            </div>
-
-          `;
-
-        }).join("");
-
-
-      /*
-       * Résumé général
-       */
-
-      confidenceValue.textContent =
-        faces.length === 1
-          ? "1 visage"
-          : `${faces.length} visages`;
-
-
-      confidenceFill.style.width = "100%";
-
-
-      /*
-       * Affichage
-       */
-
-      result.classList.add(
-        "visible"
-      );
-
+        setTimeout(() => {
+          confidenceFill.style.width = percentage + "%";
+        }, 100);
+      } else {
+        confidenceValue.textContent = "Détectée";
+        setTimeout(() => {
+          confidenceFill.style.width = "85%";
+        }, 100);
+      }
     }
-
-
-    /*
-     * ============================================================
-     * ERROR
-     * ============================================================
-     */
 
     function showError(message) {
-
       result.classList.add("error");
-
-      resultSubtitle.textContent =
-        "Résultat";
-
-      resultEmotion.innerHTML = `
-        <div style="
-          color: var(--red);
-          font-size: 18px;
-          font-weight: 700;
-          line-height: 1.4;
-        ">
-          ${escapeHtml(message)}
-        </div>
-      `;
-
-      emotionIcon.textContent =
-        "⚠️";
-
-      confidenceValue.textContent =
-        "Erreur";
-
-      confidenceFill.style.width =
-        "0%";
-
-      result.classList.add(
-        "visible"
-      );
-
+      resultEmotion.textContent = message;
+      emotionIcon.textContent = "⚠️";
+      confidenceValue.textContent = "Erreur";
+      confidenceFill.style.width = "0%";
+      result.classList.add("visible");
     }
-
-
-    /*
-     * ============================================================
-     * ESCAPE HTML
-     * ============================================================
-     *
-     * Évite d'injecter directement une erreur serveur
-     * dans le HTML.
-     */
-
-    function escapeHtml(value) {
-
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-    }
-
-
-    /*
-     * ============================================================
-     * HIDE RESULT
-     * ============================================================
-     */
 
     function hideResult() {
-
-      result.classList.remove(
-        "visible",
-        "error"
-      );
-
-      confidenceFill.style.width =
-        "0%";
-
-      resultEmotion.innerHTML =
-        "—";
-
-      resultSubtitle.textContent =
-        "Émotions détectées";
-
-      emotionIcon.textContent =
-        "🤔";
-
-      confidenceValue.textContent =
-        "Analyse";
-
+      result.classList.remove("visible", "error");
+      confidenceFill.style.width = "0%";
     }
 
   </script>
