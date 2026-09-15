@@ -5,6 +5,7 @@ opencv-python-headless
 numpy
 python-multipart
 pillow
+pillow-heif
 torch
 transformers
 huggingface-hub
