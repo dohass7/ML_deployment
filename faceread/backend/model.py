@@ -17,7 +17,7 @@ face_detector = cv2.FaceDetectorYN.create(
     "face_detection_yunet_2023mar.onnx",
     "",
     (320, 320),
-    0.7,   # seuil de confiance
+    0.4,   # seuil de confiance
     0.3,   # NMS
     5000   # top_k
 )
