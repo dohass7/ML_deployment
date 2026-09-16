@@ -1,0 +1,9 @@
+FROM nginx:1.27-alpine
+
+# Config Nginx custom
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Ton site
+COPY index.html /usr/share/nginx/html/index.html
+
+EXPOSE 80

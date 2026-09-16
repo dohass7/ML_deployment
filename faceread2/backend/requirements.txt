@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+#tensorflow==2.20.0
+opencv-python-headless
+numpy
+python-multipart
+pillow
+pillow-heif
+torch
+torchvision
+transformers
+huggingface-hub

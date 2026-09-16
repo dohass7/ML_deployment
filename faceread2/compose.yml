@@ -1,0 +1,22 @@
+services:
+  faceread-api:
+    image: ddb7/faceread-api:latest      #  image 1
+    container_name: faceread-api
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - faceread-network
+
+  faceread-front:
+    image: ddb7/faceread-front:latest    #  image 2
+    container_name: faceread-front
+    ports:
+      - "3001:80"
+    networks:
+      - faceread-network
+
+networks:
+  faceread-network:
+    name: faceread-network
+    external: true
