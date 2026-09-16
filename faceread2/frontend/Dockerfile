@@ -4,6 +4,6 @@ FROM nginx:1.27-alpine
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Ton site
-COPY index.html /usr/share/nginx/html/index.html
+COPY frontend/index.html /usr/share/nginx/html/index.html
 
 EXPOSE 80
