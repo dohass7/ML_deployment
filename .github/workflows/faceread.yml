@@ -3,8 +3,12 @@ name: FaceRead
 on:
   push:
     branches: [main]
+    paths:
+      - 'faceread/**'
   pull_request:
     branches: [main]
+    paths:
+      - 'faceread/**'
 
 env:
   PROJECT_LOCATION: /opt/applications/faceread
