@@ -54,7 +54,7 @@ jobs:
         - name: Build and push API image
           uses: docker/build-push-action@v7
           with:
-            context: ./faceread2/backend
+            context: ./faceread2
             file: ./faceread2/backend/Dockerfile
             push: true
             tags: |
@@ -64,7 +64,7 @@ jobs:
         - name: Build and push frontend image
           uses: docker/build-push-action@v7
           with:
-            context: ./faceread2/frontend
+            context: ./faceread2
             file: ./faceread2/frontend/Dockerfile
             push: true
             tags: |
