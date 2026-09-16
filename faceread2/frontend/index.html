@@ -1,0 +1,2185 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        FaceRead — Emotion Intelligence
+    </title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+
+            --bg: #050507;
+
+            --card: rgba(
+                18,
+                18,
+                24,
+                0.85
+            );
+
+            --card-border: rgba(
+                255,
+                255,
+                255,
+                0.08
+            );
+
+            --purple: #8b5cf6;
+
+            --purple-light: #a78bfa;
+
+            --green: #22c55e;
+
+            --green-light: #4ade80;
+
+            --text: #f5f5f5;
+
+            --muted: #a1a1aa;
+
+            --danger: #ef4444;
+
+            --radius: 24px;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 20% 10%,
+                    rgba(
+                        139,
+                        92,
+                        246,
+                        0.14
+                    ),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 80% 80%,
+                    rgba(
+                        34,
+                        197,
+                        94,
+                        0.08
+                    ),
+                    transparent 30%
+                ),
+
+                var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            padding-bottom: 60px;
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        header {
+
+            width: 100%;
+
+            border-bottom:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.06
+                );
+
+            backdrop-filter:
+                blur(20px);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            background:
+                rgba(
+                    5,
+                    5,
+                    7,
+                    0.75
+                );
+        }
+
+
+        .header-inner {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            padding:
+                20px 24px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+
+        .logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.5px;
+        }
+
+
+        .logo-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--purple),
+                    var(--green)
+                );
+
+            box-shadow:
+                0 0 30px
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.25
+                );
+        }
+
+
+        .status {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+
+        .status-dot {
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            background:
+                var(--green);
+
+            box-shadow:
+                0 0 12px
+                var(--green);
+        }
+
+
+        /* ==================================================
+           MAIN
+        ================================================== */
+
+        main {
+
+            max-width: 1100px;
+
+            margin: auto;
+
+            padding:
+                70px 24px 0;
+        }
+
+
+        /* ==================================================
+           HERO
+        ================================================== */
+
+        .hero {
+
+            text-align: center;
+
+            max-width: 800px;
+
+            margin:
+                0 auto 50px;
+        }
+
+
+        .badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                8px 14px;
+
+            border-radius: 999px;
+
+            background:
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.1
+                );
+
+            border:
+                1px solid
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.2
+                );
+
+            color:
+                var(--purple-light);
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            margin-bottom: 22px;
+        }
+
+
+        .hero h1 {
+
+            font-size:
+                clamp(
+                    42px,
+                    7vw,
+                    76px
+                );
+
+            line-height: 0.98;
+
+            letter-spacing:
+                -4px;
+
+            margin-bottom: 24px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ffffff 20%,
+                    #c4b5fd 60%,
+                    #4ade80
+                );
+
+            -webkit-background-clip: text;
+
+            background-clip: text;
+
+            color: transparent;
+        }
+
+
+        .hero p {
+
+            color: var(--muted);
+
+            font-size: 18px;
+
+            line-height: 1.7;
+
+            max-width: 650px;
+
+            margin: auto;
+        }
+
+
+        /* ==================================================
+           ANALYZER CARD
+        ================================================== */
+
+        .analyzer {
+
+            background:
+                var(--card);
+
+            border:
+                1px solid
+                var(--card-border);
+
+            border-radius:
+                var(--radius);
+
+            padding: 28px;
+
+            box-shadow:
+                0 30px 80px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.35
+                );
+
+            backdrop-filter:
+                blur(25px);
+        }
+
+
+        .analyzer-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 24px;
+        }
+
+
+        .analyzer-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .analyzer-title-icon {
+
+            width: 46px;
+
+            height: 46px;
+
+            border-radius: 14px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 22px;
+
+            background:
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.12
+                );
+
+            border:
+                1px solid
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.2
+                );
+        }
+
+
+        .analyzer-title h2 {
+
+            font-size: 20px;
+        }
+
+
+        .analyzer-title span {
+
+            display: block;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            margin-top: 3px;
+        }
+
+
+        /* ==================================================
+           DROP ZONE
+        ================================================== */
+
+        .drop-zone {
+
+            min-height: 240px;
+
+            border:
+                1.5px dashed
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.16
+                );
+
+            border-radius: 20px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            padding: 30px;
+
+            cursor: pointer;
+
+            transition:
+                border-color .25s,
+                background .25s,
+                transform .25s;
+        }
+
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+
+            border-color:
+                var(--purple);
+
+            background:
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.06
+                );
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        .upload-icon {
+
+            width: 64px;
+
+            height: 64px;
+
+            border-radius: 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 28px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(
+                        139,
+                        92,
+                        246,
+                        0.18
+                    ),
+                    rgba(
+                        34,
+                        197,
+                        94,
+                        0.10
+                    )
+                );
+
+            margin-bottom: 18px;
+        }
+
+
+        .drop-zone h3 {
+
+            font-size: 18px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .drop-zone p {
+
+            color: var(--muted);
+
+            font-size: 14px;
+        }
+
+
+        input[type="file"] {
+
+            display: none;
+        }
+
+
+        /* ==================================================
+           ORIGINAL PREVIEW
+        ================================================== */
+
+        .preview {
+
+            display: none;
+
+            margin-top: 24px;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+
+            background: #000;
+        }
+
+
+        .preview img {
+
+            width: 100%;
+
+            max-height: 500px;
+
+            object-fit: contain;
+
+            display: block;
+        }
+
+
+        /* ==================================================
+           BUTTON
+        ================================================== */
+
+        .actions {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 20px;
+        }
+
+
+        button {
+
+            border: none;
+
+            cursor: pointer;
+
+            font-family: inherit;
+        }
+
+
+        .analyze-btn {
+
+            flex: 1;
+
+            padding:
+                16px 24px;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--purple),
+                    #7c3aed
+                );
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            transition:
+                transform .2s,
+                box-shadow .2s,
+                opacity .2s;
+        }
+
+
+        .analyze-btn:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 15px 35px
+                rgba(
+                    139,
+                    92,
+                    246,
+                    0.25
+                );
+        }
+
+
+        .analyze-btn:disabled {
+
+            opacity: .5;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+            box-shadow: none;
+        }
+
+
+        .reset-btn {
+
+            padding:
+                16px 22px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.06
+                );
+
+            color: white;
+
+            font-weight: 600;
+
+            display: none;
+        }
+
+
+        /* ==================================================
+           LOADING
+        ================================================== */
+
+        .loading {
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            margin-top: 24px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+        }
+
+
+        .spinner {
+
+            width: 20px;
+
+            height: 20px;
+
+            border:
+                2px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.15
+                );
+
+            border-top-color:
+                var(--purple);
+
+            border-radius: 50%;
+
+            animation:
+                spin .8s linear infinite;
+        }
+
+
+        @keyframes spin {
+
+            to {
+                transform:
+                    rotate(360deg);
+            }
+        }
+
+
+        /* ==================================================
+           RESULTS
+        ================================================== */
+
+        .results {
+
+            display: none;
+
+            margin-top: 32px;
+        }
+
+
+        .results-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+
+        .results-header h2 {
+
+            font-size: 21px;
+        }
+
+
+        .faces-count {
+
+            padding:
+                7px 12px;
+
+            border-radius: 999px;
+
+            background:
+                rgba(
+                    34,
+                    197,
+                    94,
+                    0.1
+                );
+
+            border:
+                1px solid
+                rgba(
+                    34,
+                    197,
+                    94,
+                    0.2
+                );
+
+            color:
+                var(--green-light);
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        /* ==================================================
+           ANNOTATED IMAGE
+        ================================================== */
+
+        .annotated-wrapper {
+
+            position: relative;
+
+            background: #000;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+
+            box-shadow:
+                0 25px 70px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.4
+                );
+        }
+
+
+        .annotated-wrapper img {
+
+            display: block;
+
+            width: 100%;
+
+            max-height: 700px;
+
+            object-fit: contain;
+        }
+
+
+        /* ==================================================
+           FACE RESULTS
+        ================================================== */
+
+        .face-results {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(
+                        220px,
+                        1fr
+                    )
+                );
+
+            gap: 14px;
+
+            margin-top: 18px;
+        }
+
+
+        .face-card {
+
+            padding: 18px;
+
+            border-radius: 18px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.035
+                );
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.07
+                );
+        }
+
+
+        .face-card-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 12px;
+        }
+
+
+        .face-number {
+
+            font-size: 13px;
+
+            color: var(--muted);
+        }
+
+
+        .emotion {
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            margin-bottom: 10px;
+        }
+
+
+        .confidence-label {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .confidence-bar {
+
+            height: 6px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+
+            border-radius: 999px;
+
+            overflow: hidden;
+        }
+
+
+        .confidence-fill {
+
+            height: 100%;
+
+            border-radius: inherit;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--purple),
+                    var(--green)
+                );
+        }
+
+
+        /* ==================================================
+           ERROR
+        ================================================== */
+
+        .error {
+
+            display: none;
+
+            margin-top: 20px;
+
+            padding: 16px 18px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(
+                    239,
+                    68,
+                    68,
+                    0.08
+                );
+
+            border:
+                1px solid
+                rgba(
+                    239,
+                    68,
+                    68,
+                    0.2
+                );
+
+            color:
+                #fca5a5;
+
+            font-size: 14px;
+        }
+
+
+        /* ==================================================
+           NO FACE
+        ================================================== */
+
+        .no-face {
+
+            display: none;
+
+            text-align: center;
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.03
+                );
+
+            color: var(--muted);
+
+            margin-top: 18px;
+        }
+
+
+        .no-face-icon {
+
+            font-size: 38px;
+
+            margin-bottom: 12px;
+        }
+
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        footer {
+
+            text-align: center;
+
+            color:
+                #52525b;
+
+            font-size: 12px;
+
+            margin-top: 50px;
+        }
+
+
+        /* ==================================================
+           RESPONSIVE
+        ================================================== */
+
+        @media (max-width: 700px) {
+
+            main {
+
+                padding:
+                    45px 16px 0;
+            }
+
+
+            .header-inner {
+
+                padding:
+                    16px;
+            }
+
+
+            .hero {
+
+                margin-bottom: 35px;
+            }
+
+
+            .hero h1 {
+
+                letter-spacing:
+                    -2px;
+            }
+
+
+            .hero p {
+
+                font-size: 15px;
+            }
+
+
+            .analyzer {
+
+                padding: 18px;
+            }
+
+
+            .analyzer-header {
+
+                align-items:
+                    flex-start;
+            }
+
+
+            .status {
+
+                display: none;
+            }
+
+
+            .drop-zone {
+
+                min-height: 210px;
+            }
+
+
+            .actions {
+
+                flex-direction:
+                    column;
+            }
+
+
+            .reset-btn {
+
+                width: 100%;
+            }
+
+
+            .results-header {
+
+                align-items:
+                    flex-start;
+
+                gap: 12px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="header-inner">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                DA
+            </div>
+
+            <span>
+                FaceRead
+            </span>
+
+        </div>
+
+
+        <div class="status">
+
+            <span class="status-dot"></span>
+
+            Emotion AI active
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<main>
+
+
+    <!-- ==================================================
+         HERO
+    ================================================== -->
+
+    <section class="hero">
+
+        <div class="badge">
+            AI Vision
+        </div>
+
+        <h1>
+            Understand<br>
+            every expression.
+        </h1>
+
+        <p>
+            Upload an image and let our AI detect
+            every face and analyze its emotion
+            directly on the original image.
+        </p>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         ANALYZER
+    ================================================== -->
+
+    <section class="analyzer">
+
+
+        <div class="analyzer-header">
+
+            <div class="analyzer-title">
+
+                <div class="analyzer-title-icon">
+                    😀
+                </div>
+
+                <div>
+
+                    <h2>
+                        Emotion AI
+                    </h2>
+
+                    <span>
+                        Face emotion
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="status">
+
+                <span class="status-dot"></span>
+
+                Ready
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==================================================
+             DROP ZONE
+        ================================================== -->
+
+        <div
+            class="drop-zone"
+            id="dropZone"
+        >
+
+            <div class="upload-icon">
+                ↑
+            </div>
+
+            <h3>
+                Drop your image here
+            </h3>
+
+            <p>
+                or click to browse your files
+            </p>
+
+            <p style="margin-top:8px;font-size:12px;">
+                JPG, JPEG, PNG, WEBP
+            </p>
+
+        </div>
+
+
+        <input
+            type="file"
+            id="fileInput"
+            accept="image/*"
+        >
+
+
+
+        <!-- ==================================================
+             ORIGINAL PREVIEW
+        ================================================== -->
+
+        <div
+            class="preview"
+            id="preview"
+        >
+
+            <img
+                id="previewImage"
+                alt="Image sélectionnée"
+            >
+
+        </div>
+
+
+
+        <!-- ==================================================
+             ACTIONS
+        ================================================== -->
+
+        <div class="actions">
+
+            <button
+                class="analyze-btn"
+                id="analyzeBtn"
+                disabled
+            >
+                🔍 Analyze image
+            </button>
+
+            <button
+                class="reset-btn"
+                id="resetBtn"
+            >
+                Reset
+            </button>
+
+        </div>
+
+
+
+        <!-- ==================================================
+             LOADING
+        ================================================== -->
+
+        <div
+            class="loading"
+            id="loading"
+        >
+
+            <div class="spinner"></div>
+
+            <span>
+                Detecting faces and analyzing emotions...
+            </span>
+
+        </div>
+
+
+
+        <!-- ==================================================
+             ERROR
+        ================================================== -->
+
+        <div
+            class="error"
+            id="error"
+        ></div>
+
+
+
+        <!-- ==================================================
+             RESULTS
+        ================================================== -->
+
+        <section
+            class="results"
+            id="results"
+        >
+
+            <div class="results-header">
+
+                <h2>
+                    Analysis result
+                </h2>
+
+                <div
+                    class="faces-count"
+                    id="facesCount"
+                >
+                    0 faces
+                </div>
+
+            </div>
+
+
+
+            <!-- IMAGE ANNOTÉE -->
+
+            <div class="annotated-wrapper">
+
+                <img
+                    id="annotatedImage"
+                    alt="Image analyzed with face detection"
+                >
+
+            </div>
+
+
+
+            <!-- RÉSULTATS INDIVIDUELS -->
+
+            <div
+                class="face-results"
+                id="faceResults"
+            ></div>
+
+
+
+            <!-- AUCUN VISAGE -->
+
+            <div
+                class="no-face"
+                id="noFace"
+            >
+
+                <div class="no-face-icon">
+                    🔎
+                </div>
+
+                <strong>
+                    No faces detected
+                </strong>
+
+                <p style="margin-top:8px;">
+                    Please try another image.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </section>
+
+
+
+    <footer>
+
+        FaceRead — AI Emotion Intelligence
+
+    </footer>
+
+
+</main>
+
+
+
+<script>
+    // =====================================================
+    // API URL
+    // =====================================================
+
+    const API_URL = `${window.location.protocol}//${window.location.hostname}:8000`;
+
+    // =====================================================
+    // ELEMENTS
+    // =====================================================
+
+    const dropZone =
+        document.getElementById(
+            "dropZone"
+        );
+
+    const fileInput =
+        document.getElementById(
+            "fileInput"
+        );
+
+    const preview =
+        document.getElementById(
+            "preview"
+        );
+
+    const previewImage =
+        document.getElementById(
+            "previewImage"
+        );
+
+    const analyzeBtn =
+        document.getElementById(
+            "analyzeBtn"
+        );
+
+    const resetBtn =
+        document.getElementById(
+            "resetBtn"
+        );
+
+    const loading =
+        document.getElementById(
+            "loading"
+        );
+
+    const results =
+        document.getElementById(
+            "results"
+        );
+
+    const annotatedImage =
+        document.getElementById(
+            "annotatedImage"
+        );
+
+    const faceResults =
+        document.getElementById(
+            "faceResults"
+        );
+
+    const facesCount =
+        document.getElementById(
+            "facesCount"
+        );
+
+    const noFace =
+        document.getElementById(
+            "noFace"
+        );
+
+    const errorBox =
+        document.getElementById(
+            "error"
+        );
+
+
+    let selectedFile = null;
+
+
+    // =====================================================
+    // FILE SELECTION
+    // =====================================================
+
+    dropZone.addEventListener(
+        "click",
+        () => {
+            fileInput.click();
+        }
+    );
+
+
+    fileInput.addEventListener(
+        "change",
+        event => {
+
+            const file =
+                event.target.files[0];
+
+            if (file) {
+
+                handleFile(file);
+            }
+        }
+    );
+
+
+    // =====================================================
+    // DRAG & DROP
+    // =====================================================
+
+    dropZone.addEventListener(
+        "dragover",
+        event => {
+
+            event.preventDefault();
+
+            dropZone.classList.add(
+                "dragover"
+            );
+        }
+    );
+
+
+    dropZone.addEventListener(
+        "dragleave",
+        () => {
+
+            dropZone.classList.remove(
+                "dragover"
+            );
+        }
+    );
+
+
+    dropZone.addEventListener(
+        "drop",
+        event => {
+
+            event.preventDefault();
+
+            dropZone.classList.remove(
+                "dragover"
+            );
+
+            const file =
+                event.dataTransfer.files[0];
+
+            if (file) {
+
+                handleFile(file);
+            }
+        }
+    );
+
+
+    // =====================================================
+    // HANDLE FILE
+    // =====================================================
+
+    function handleFile(file) {
+
+        if (
+            !file.type.startsWith(
+                "image/"
+            )
+        ) {
+
+            showError(
+                "Veuillez sélectionner une image."
+            );
+
+            return;
+        }
+
+
+        selectedFile = file;
+
+
+        // Preview local
+        const reader =
+            new FileReader();
+
+
+        reader.onload = event => {
+
+            previewImage.src =
+                event.target.result;
+
+            preview.style.display =
+                "block";
+        };
+
+
+        reader.readAsDataURL(
+            file
+        );
+
+
+        analyzeBtn.disabled =
+            false;
+
+        resetBtn.style.display =
+            "block";
+
+
+        hideError();
+
+        results.style.display =
+            "none";
+    }
+
+
+    // =====================================================
+    // ANALYZE
+    // =====================================================
+
+   
+
+    analyzeBtn.addEventListener(
+        "click",
+        analyzeImage
+    );
+
+
+    async function analyzeImage() {
+
+        if (!selectedFile) {
+
+            showError(
+                "Veuillez sélectionner une image."
+            );
+
+            return;
+        }
+
+
+        // UI
+        analyzeBtn.disabled =
+            true;
+
+        loading.style.display =
+            "flex";
+
+        results.style.display =
+            "none";
+
+        hideError();
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "file",
+            selectedFile
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/predict`,
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            console.log(
+                "Réponse API :",
+                data
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    "Erreur pendant l'analyse."
+                );
+            }
+
+
+            // =================================================
+            // VÉRIFICATION DE LA RÉPONSE
+            // =================================================
+
+            if (
+                !data.faces ||
+                !Array.isArray(
+                    data.faces
+                )
+            ) {
+
+                throw new Error(
+                    "Format de réponse API invalide."
+                );
+            }
+
+
+            if (!data.image) {
+
+                throw new Error(
+                    "L'image annotée est absente de la réponse API."
+                );
+            }
+
+
+            // =================================================
+            // AFFICHAGE IMAGE ANNOTÉE
+            // =================================================
+
+            annotatedImage.src =
+                "data:image/jpeg;base64," +
+                data.image;
+
+
+            // =================================================
+            // AFFICHAGE RÉSULTATS
+            // =================================================
+
+            showResults(
+                data.faces
+            );
+
+
+            results.style.display =
+                "block";
+
+
+            // Scroll automatique
+            results.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Erreur :",
+                error
+            );
+
+
+            showError(
+                error.message ||
+                "Une erreur est survenue."
+            );
+
+        } finally {
+
+            analyzeBtn.disabled =
+                false;
+
+            loading.style.display =
+                "none";
+        }
+    }
+
+
+    // =====================================================
+    // SHOW RESULTS
+    // =====================================================
+
+    function showResults(
+        faces
+    ) {
+
+        faceResults.innerHTML =
+            "";
+
+
+        noFace.style.display =
+            "none";
+
+
+        // --------------------------------------------------
+        // 0 VISAGE
+        // --------------------------------------------------
+
+        if (
+            faces.length === 0
+        ) {
+
+            facesCount.textContent =
+                "0 face";
+
+            noFace.style.display =
+                "block";
+
+            return;
+        }
+
+
+        // --------------------------------------------------
+        // COUNT
+        // --------------------------------------------------
+
+        if (
+            faces.length === 1
+        ) {
+
+            facesCount.textContent =
+                "1 face detected";
+
+        } else {
+
+            facesCount.textContent =
+                faces.length +
+                " faces detected";
+        }
+
+
+        // --------------------------------------------------
+        // CARDS
+        // --------------------------------------------------
+
+        faces.forEach(
+            face => {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+                card.className =
+                    "face-card";
+
+
+                const confidence =
+                    Number(
+                        face.confidence
+                    ) || 0;
+
+
+                const confidencePercent =
+                    (
+                        confidence * 100
+                    ).toFixed(1);
+
+
+                const emotion =
+                    formatEmotion(
+                        face.emotion
+                    );
+
+
+                const icon =
+                    getEmotionIcon(
+                        face.emotion
+                    );
+
+
+                card.innerHTML = `
+
+                    <div class="face-card-top">
+
+                        <span class="face-number">
+                            Face ${escapeHtml(face.face)}
+                        </span>
+
+                        <span>
+                            ${icon}
+                        </span>
+
+                    </div>
+
+
+                    <div class="emotion">
+                        ${escapeHtml(emotion)}
+                    </div>
+
+
+                    <div class="confidence-label">
+
+                        <span>
+                            Confidence
+                        </span>
+
+                        <strong>
+                            ${confidencePercent}%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="confidence-bar">
+
+                        <div
+                            class="confidence-fill"
+                            style="
+                                width:
+                                ${confidencePercent}%;
+                            "
+                        ></div>
+
+                    </div>
+                `;
+
+
+                faceResults.appendChild(
+                    card
+                );
+            }
+        );
+    }
+
+
+    // =====================================================
+    // EMOTION ICON
+    // =====================================================
+
+    function getEmotionIcon(
+        emotion
+    ) {
+
+        const normalized =
+            String(
+                emotion || ""
+            ).toLowerCase();
+
+        
+        const icons = {
+
+            anger: "😠",
+            disgust: "🤢",
+            fear: "😨",
+            happiness: "😀",
+            neutral: "😐",
+            sadness: "😢",
+            surprise: "😲"
+        };
+
+
+        return (
+            icons[normalized] ||
+            "🙂"
+        );
+    }
+
+
+    // =====================================================
+    // FORMAT EMOTION
+    // =====================================================
+
+    function formatEmotion(
+        emotion
+    ) {
+
+        if (!emotion) {
+
+            return "Unknown";
+        }
+
+
+        const text =
+            String(emotion);
+
+
+        return (
+            text
+                .charAt(0)
+                .toUpperCase() +
+            text
+                .slice(1)
+        );
+    }
+
+
+    // =====================================================
+    // RESET
+    // =====================================================
+
+    resetBtn.addEventListener(
+        "click",
+        resetApp
+    );
+
+
+    function resetApp() {
+
+        selectedFile =
+            null;
+
+
+        fileInput.value =
+            "";
+
+
+        previewImage.src =
+            "";
+
+
+        annotatedImage.src =
+            "";
+
+
+        preview.style.display =
+            "none";
+
+
+        results.style.display =
+            "none";
+
+
+        resetBtn.style.display =
+            "none";
+
+
+        analyzeBtn.disabled =
+            true;
+
+
+        faceResults.innerHTML =
+            "";
+
+
+        hideError();
+    }
+
+
+    // =====================================================
+    // ERROR
+    // =====================================================
+
+    function showError(
+        message
+    ) {
+
+        errorBox.textContent =
+            message;
+
+        errorBox.style.display =
+            "block";
+    }
+
+
+    function hideError() {
+
+        errorBox.textContent =
+            "";
+
+        errorBox.style.display =
+            "none";
+    }
+
+
+    // =====================================================
+    // SECURITY
+    // =====================================================
+
+    function escapeHtml(
+        value
+    ) {
+
+        return String(value)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+    }
+
+</script>
+
+
+</body>
+
+</html>
