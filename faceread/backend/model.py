@@ -68,14 +68,15 @@ def predict_emotion(pil_image):
     )
 
     H, W = img.shape[:2]
+    size = 640
 
     img_small = cv2.resize(
         img,
-        (320, 320)
+        (size, size)
     )
-
+    
     face_detector.setInputSize(
-        (320, 320)
+        (size, size)
     )
 
     _, faces = face_detector.detect(
@@ -91,8 +92,8 @@ def predict_emotion(pil_image):
             "image": None
         }
 
-    scale_x = W / 320
-    scale_y = H / 320
+    scale_x = W / size
+    scale_y = H / size
 
     margin = 0.10
 
