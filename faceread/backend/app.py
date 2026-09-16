@@ -143,6 +143,8 @@ async def predict(
     # --------------------------------------------------------
 
     try:
+        print("FICHIER :", file.filename)
+        print("CONTENT TYPE :", file.content_type)
 
         contents = await file.read()
 
@@ -156,6 +158,10 @@ async def predict(
         image = Image.open(
             io.BytesIO(contents)
         ).convert("RGB")
+
+        print("FORMAT IMAGE :", image.format)
+        print("TAILLE IMAGE :", image.size)
+        print("MODE IMAGE :", image.mode)
 
         # Force le chargement de l'image
         image.load()
@@ -174,8 +180,9 @@ async def predict(
             {
                 "faces": result["faces"],
                 "image": (
-                    f"<base64 "
-                    f"{len(result['image'])} caractères>"
+                    f"<base64 {len(result['image'])} caractères>"
+                    if result["image"] is not None
+                    else None
                 )
             }
         )
