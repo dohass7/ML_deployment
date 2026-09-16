@@ -107,3 +107,15 @@ jobs:
                docker compose pull && \
                docker compose down && \
                docker compose up -d"
+
+        # ─────────────────────────────────────
+      # 4. Nettoyage des vieilles images Docker
+      # ─────────────────────────────────────
+      - name: Cleanup old Docker images
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+              -i ~/.ssh/id_rsa \
+              -p ${{ secrets.PROD_SERVER_SSH_PORT }} \
+              ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }} \
+              "docker image prune -a -f && docker builder prune -f"
+
