@@ -68,7 +68,7 @@ def predict_emotion(pil_image):
     )
 
     H, W = img.shape[:2]
-    size = 640
+    size = 320
 
     img_small = cv2.resize(
         img,
