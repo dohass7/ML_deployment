@@ -3,12 +3,12 @@ name: FaceRead-optimized
 on:
   push:
     branches: [main]
-    # paths:
-    #   - 'faceread2/**'
+    paths:
+       - 'faceread2/**'
   pull_request:
     branches: [main]
-    # paths:
-    #   - 'faceread2/**'
+    paths:
+       - 'faceread2/**'
 
 env:
   PROJECT_LOCATION: /opt/applications/faceread2
