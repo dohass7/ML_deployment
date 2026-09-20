@@ -12,7 +12,7 @@ on:
       - 'faceread3/**'
 
 env:
-  PROJECT_LOCATION: /opt/applications/faceread3 #
+  PROJECT_LOCATION: /opt/applications/faceread3 ###
 
   PROJECT_NETWORK: faceread-network
   PROJECT_NAME: faceread-api
