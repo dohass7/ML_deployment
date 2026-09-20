@@ -99,8 +99,7 @@ jobs:
           scp -o StrictHostKeyChecking=no \
               -i ~/.ssh/id_rsa \
               -P ${{ secrets.PROD_SERVER_SSH_PORT }} \
-              ./faceread3
-            /compose.yml \
+              ./faceread3/compose.yml \
               ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }}:${{ env.PROJECT_LOCATION }}/compose.yml
 
       - name: Deploy on VPS
