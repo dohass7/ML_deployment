@@ -1,17 +1,18 @@
-name: FaceRead-optimized
+name: FaceRead-optimized-https
 
-# on:
-#   push:
-#     branches: [main]
-#     paths:
-#       - 'faceread2/**'
-#   pull_request:
-#     branches: [main]
-#     paths:
-#       - 'faceread2/**'
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'faceread3/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'faceread3/**'
 
 env:
-  PROJECT_LOCATION: /opt/applications/faceread2
+  PROJECT_LOCATION: /opt/applications/faceread3
+
   PROJECT_NETWORK: faceread-network
   PROJECT_NAME: faceread-api
   IMAGE_NAME: faceread-api
@@ -21,7 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./faceread2/backend #
+        working-directory: ./faceread3
+      /backend #
     steps:
       - uses: actions/checkout@v5
 
@@ -54,8 +56,10 @@ jobs:
         - name: Build and push API image
           uses: docker/build-push-action@v7
           with:
-            context: ./faceread2/backend
-            file: ./faceread2/backend/Dockerfile
+            context: ./faceread3
+          /backend
+            file: ./faceread3
+          /backend/Dockerfile
             push: true
             tags: |
               ${{ secrets.REGISTRY_USERNAME }}/faceread-api:latest
@@ -64,8 +68,10 @@ jobs:
         - name: Build and push frontend image
           uses: docker/build-push-action@v7
           with:
-            context: ./faceread2/frontend
-            file: ./faceread2/frontend/Dockerfile
+            context: ./faceread3
+          /frontend
+            file: ./faceread3
+          /frontend/Dockerfile
             push: true
             tags: |
               ${{ secrets.REGISTRY_USERNAME }}/faceread-front:latest
@@ -97,7 +103,8 @@ jobs:
           scp -o StrictHostKeyChecking=no \
               -i ~/.ssh/id_rsa \
               -P ${{ secrets.PROD_SERVER_SSH_PORT }} \
-              ./faceread2/compose.yml \
+              ./faceread3
+            /compose.yml \
               ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }}:${{ env.PROJECT_LOCATION }}/compose.yml
 
       - name: Deploy on VPS
