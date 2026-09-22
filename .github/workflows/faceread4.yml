@@ -56,7 +56,7 @@ jobs:
         - name: Build and push API image
           uses: docker/build-push-action@v7
           with:
-            context: ./faceread4/backend
+            context: ./faceread4
             file: ./faceread4/backend/Dockerfile
             push: true
             tags: |
@@ -66,7 +66,7 @@ jobs:
         - name: Build and push frontend image
           uses: docker/build-push-action@v7
           with:
-            context: ./faceread4/frontend
+            context: ./faceread4
             file: ./faceread4/frontend/Dockerfile
             push: true
             tags: |
@@ -99,8 +99,7 @@ jobs:
           scp -o StrictHostKeyChecking=no \
               -i ~/.ssh/id_rsa \
               -P ${{ secrets.PROD_SERVER_SSH_PORT }} \
-              ./faceread4
-            /compose.yml \
+              ./faceread4/compose.yml \
               ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }}:${{ env.PROJECT_LOCATION }}/compose.yml
 
       - name: Deploy on VPS
