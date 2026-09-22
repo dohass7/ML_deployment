@@ -4,12 +4,12 @@ name: FaceRead-optimized-https-mongodb
 on:
   push:
     branches: [main]
-    paths:
-      - 'faceread4/**'
+    # paths:
+    #   - 'faceread4/**'
   pull_request:
     branches: [main]
-    paths:
-      - 'faceread4/**'
+    # paths:
+    #   - 'faceread4/**'
 
 env:
   PROJECT_LOCATION: /opt/applications/faceread4
