@@ -169,12 +169,15 @@ async def predict(
         result = predict_emotion(
             image
         )
-        analyses.insert_one({
-            "filename": file.filename,
-            "upload_date": datetime.utcnow(),
-            "faces_count": len(result["faces"]),
-            "faces": result["faces"]
-        })
+        try:
+            analyses.insert_one({
+                "filename": file.filename,
+                "upload_date": datetime.utcnow(),
+                "faces_count": len(result["faces"]),
+                "faces": result["faces"],
+            })
+        except Exception as e:
+            print("MONGO INSERT ERROR :", str(e))
         # Debug backend
         print(
             "RESULTAT ENVOYÉ AU FRONTEND :",
