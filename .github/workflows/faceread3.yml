@@ -4,12 +4,12 @@ name: FaceRead-optimized-https
 on:
   push:
     branches: [main]
-    # paths:
-    #   - 'faceread3/**'
+    paths:
+      - 'faceread3/**'
   pull_request:
     branches: [main]
-    # paths:
-    #   - 'faceread3/**'
+    paths:
+      - 'faceread3/**'
 
 env:
   PROJECT_LOCATION: /opt/applications/faceread3 ###
