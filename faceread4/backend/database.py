@@ -4,7 +4,8 @@ from pymongo import MongoClient
 
 MONGO_HOST = os.getenv(
     "MONGO_HOST",
-    "host.docker.internal"
+    "172.17.0.1"
+    #"host.docker.internal"
 )
 
 MONGO_PORT = int(
