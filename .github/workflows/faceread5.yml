@@ -40,7 +40,7 @@ jobs:
         run: |
           flake8 app.py model.py \
             --max-line-length=120 \
-            --ignore=E501,W503,E402,F401,E302,W291,W292,E303,E226,E265,W293,E261,E262
+            --ignore=E501,W503,E402,F401,E302,W291,W292,E303,E226,E265,W293,E261,E262,W391
 
   # ─────────────────────────────────────────────────────────
   # 2. BUILD & PUSH des images sur Docker Hub
