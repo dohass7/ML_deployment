@@ -212,6 +212,3 @@ async def predict(
                 f"{str(e)}"
             )
         )
-
-
-
