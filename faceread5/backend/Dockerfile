@@ -31,5 +31,5 @@ COPY backend/app.py backend/model.py backend/database.py backend/face_detection_
 # ── Port ──────────────────────────────────────────────────────────
 EXPOSE 8000
 
-# ── Démarrage ─────────────────────────────────────────────────────
+# ── Démarrage 
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
