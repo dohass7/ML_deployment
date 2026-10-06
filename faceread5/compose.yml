@@ -1,0 +1,72 @@
+services:
+  faceread-mongodb:
+    image: mongo:7
+    container_name: faceread-mongodb
+    restart: unless-stopped
+    ports:
+      - "${MONGO_PORT}:27017"
+    volumes:
+      - mongo_data:/data/db
+      - mongo_configurations:/data/configdb
+    networks:
+      - faceread-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+
+  faceread-mongo-express:
+    image: mongo-express:1.0.2-20-alpine3.19
+    container_name: faceread-mongo-express
+    restart: unless-stopped
+    depends_on:
+      - faceread-mongodb
+    ports:
+      - "${MONGO_EXPRESS_PORT}:8081"
+    networks:
+      - faceread-network
+    environment:
+      ME_CONFIG_MONGODB_SERVER: faceread-mongodb
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD}
+      ME_CONFIG_BASICAUTH: ${ME_BASICAUTH_ENABLED}
+
+  faceread-api:
+    image: ddb7/faceread-api:1.0.0
+    container_name: faceread-api
+    restart: unless-stopped
+    depends_on:
+      - faceread-mongodb
+    ports:
+      - "${API_PORT}:8000"
+    networks:
+      - faceread-network
+    environment:
+      MONGO_HOST_NAME: faceread-mongodb
+      MONGO_PORT: ${MONGO_PORT}
+      MONGO_DATABASE: ${MONGO_DB}
+      MONGO_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_PASSWORD: ${MONGO_ROOT_PASSWORD}
+
+
+  faceread-front:
+    image: ddb7/faceread-front:1.0.0
+    container_name: faceread-front
+    restart: unless-stopped
+    depends_on:
+      - faceread-api
+    ports:
+      - "${FRONT_PORT}:80"
+    networks:
+      - faceread-network
+
+volumes:
+  mongo_data:
+    name: mongo_data
+    external: true
+  mongo_configurations:
+    name: mongo_configurations
+    external: true
+
+networks:
+  faceread-network:
+    external: true

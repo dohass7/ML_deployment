@@ -1,0 +1,158 @@
+name: FaceRead-optimized-https-mongodb
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'faceread5/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'faceread5/**'
+
+env:
+  PROJECT_LOCATION: /opt/applications/faceread5
+  PROJECT_NETWORK: faceread-network
+  IMAGE_NAME_API: faceread-api
+  IMAGE_NAME_FRONT: faceread-front
+
+jobs:
+  # ─────────────────────────────────────────────────────────
+  # 1. LINT
+  # ─────────────────────────────────────────────────────────
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./faceread5/backend
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install lint tools
+        run: pip install flake8
+
+      - name: Lint app.py et model.py
+        run: |
+          flake8 app.py model.py \
+            --max-line-length=120 \
+            --ignore=E501,W503,E402,F401,E302,W291,W292,E303,E226,E265,W293,E261,E262
+
+  # ─────────────────────────────────────────────────────────
+  # 2. BUILD & PUSH des images sur Docker Hub
+  # ─────────────────────────────────────────────────────────
+  build-images:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./faceread5
+          file: ./faceread5/backend/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY_USERNAME }}/faceread-api:latest
+            ${{ secrets.REGISTRY_USERNAME }}/faceread-api:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./faceread5
+          file: ./faceread5/frontend/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY_USERNAME }}/faceread-front:latest
+            ${{ secrets.REGISTRY_USERNAME }}/faceread-front:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ─────────────────────────────────────────────────────────
+  # 3. DEPLOY sur le VPS
+  # ─────────────────────────────────────────────────────────
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-images
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PROD_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p ${{ secrets.PROD_SERVER_SSH_PORT }} \
+            ${{ secrets.PROD_SERVER_ADDRESS }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Create remote directory
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+              -i ~/.ssh/id_rsa \
+              -p ${{ secrets.PROD_SERVER_SSH_PORT }} \
+              ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }} \
+              "mkdir -p ${{ env.PROJECT_LOCATION }}"
+
+      - name: Copy compose.yml
+        run: |
+          scp -o StrictHostKeyChecking=no \
+              -i ~/.ssh/id_rsa \
+              -P ${{ secrets.PROD_SERVER_SSH_PORT }} \
+              ./faceread5/compose.yml \
+              ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }}:${{ env.PROJECT_LOCATION }}/compose.yml
+
+      - name: Copy .env from GitHub Secrets
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+              -i ~/.ssh/id_rsa \
+              -p ${{ secrets.PROD_SERVER_SSH_PORT }} \
+              ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }} \
+              "cat > ${{ env.PROJECT_LOCATION }}/.env <<'ENVEOF'
+          MONGO_ROOT_USERNAME=${{ secrets.MONGO_ROOT_USERNAME }}
+          MONGO_ROOT_PASSWORD=${{ secrets.MONGO_ROOT_PASSWORD }}
+          MONGO_PORT=${{ secrets.MONGO_PORT }}
+          MONGO_EXPRESS_PORT=${{ secrets.MONGO_EXPRESS_PORT }}
+          ME_BASICAUTH_ENABLED=${{ secrets.ME_BASICAUTH_ENABLED }}
+          API_PORT=${{ secrets.API_PORT }}
+          FRONT_PORT=${{ secrets.FRONT_PORT }}
+          MONGO_DB=${{ secrets.MONGO_DB }}
+          MONGO_HOST_NAME=${{ secrets.MONGO_HOST_NAME }}
+          ENVEOF
+          chmod 600 ${{ env.PROJECT_LOCATION }}/.env"
+
+      - name: Deploy on VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+              -i ~/.ssh/id_rsa \
+              -p ${{ secrets.PROD_SERVER_SSH_PORT }} \
+              ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }} \
+              "docker network inspect ${{ env.PROJECT_NETWORK }} > /dev/null 2>&1 || docker network create ${{ env.PROJECT_NETWORK }} && \
+               cd ${{ env.PROJECT_LOCATION }} && \
+               docker compose pull && \
+               docker compose up -d --remove-orphans && \
+               docker compose ps"
+
+      - name: Cleanup old Docker images
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+              -i ~/.ssh/id_rsa \
+              -p ${{ secrets.PROD_SERVER_SSH_PORT }} \
+              ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }} \
+              "docker image prune -a -f && docker builder prune -f"
