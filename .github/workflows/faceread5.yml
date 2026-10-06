@@ -148,14 +148,14 @@ jobs:
           chmod 600 ${{ env.PROJECT_LOCATION }}/.env"
 
       - name: Deploy on VPS
-          run: |
-            ssh -o StrictHostKeyChecking=no \
-            -i ~/.ssh/id_rsa \
-            -p ${{ secrets.PROD_SERVER_SSH_PORT }} \
-            ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }} \
-            "docker network inspect ${{ env.PROJECT_NETWORK }} > /dev/null 2>&1 || docker network create ${{ env.PROJECT_NETWORK }}; \
-            cd ${{ env.PROJECT_LOCATION }} && \
-            docker rm -f faceread-api faceread-front faceread-mongodb faceread-mongo-express 2>/dev/null || true; \
-            docker compose pull && \
-            docker compose up -d --remove-orphans && \
-            docker compose ps"
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+              -i ~/.ssh/id_rsa \
+              -p ${{ secrets.PROD_SERVER_SSH_PORT }} \
+              ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }} \
+              "docker network inspect ${{ env.PROJECT_NETWORK }} > /dev/null 2>&1 || docker network create ${{ env.PROJECT_NETWORK }}; \
+              cd ${{ env.PROJECT_LOCATION }} && \
+              docker compose down --remove-orphans || true; \
+              docker compose pull && \
+              docker compose up -d --remove-orphans && \
+              docker compose ps"
