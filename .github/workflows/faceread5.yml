@@ -60,16 +60,6 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: Ensure volumes and network exist
-        run: |
-          ssh -o StrictHostKeyChecking=no \
-              -i ~/.ssh/id_rsa \
-              -p ${{ secrets.PROD_SERVER_SSH_PORT }} \
-              ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }} \
-              "docker volume inspect mongo_data > /dev/null 2>&1 || docker volume create mongo_data; \
-              docker volume inspect mongo_configurations > /dev/null 2>&1 || docker volume create mongo_configurations; \
-              docker network inspect ${{ env.PROJECT_NETWORK }} > /dev/null 2>&1 || docker network create ${{ env.PROJECT_NETWORK }}"
-
       - name: Build and push API image
         uses: docker/build-push-action@v5
         with:
@@ -127,7 +117,17 @@ jobs:
               -P ${{ secrets.PROD_SERVER_SSH_PORT }} \
               ./faceread5/compose.yml \
               ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }}:${{ env.PROJECT_LOCATION }}/compose.yml
-
+      
+      - name: Ensure volumes and network exist
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+              -i ~/.ssh/id_rsa \
+              -p ${{ secrets.PROD_SERVER_SSH_PORT }} \
+              ${{ secrets.PROD_SERVER_USERNAME }}@${{ secrets.PROD_SERVER_ADDRESS }} \
+              "docker volume inspect mongo_data > /dev/null 2>&1 || docker volume create mongo_data; \
+              docker volume inspect mongo_configurations > /dev/null 2>&1 || docker volume create mongo_configurations; \
+              docker network inspect ${{ env.PROJECT_NETWORK }} > /dev/null 2>&1 || docker network create ${{ env.PROJECT_NETWORK }}"
+      
       - name: Copy .env from GitHub Secrets
         run: |
           ssh -o StrictHostKeyChecking=no \
