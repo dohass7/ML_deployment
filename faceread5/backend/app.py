@@ -213,23 +213,3 @@ async def predict(
             )
         )
 
-
-
-# @app.get("/history")
-# async def history(limit: int = Query(20, ge=1, le=100)):
-#     try:
-#         docs = list(
-#             collection.find({}, {"_id": 0})
-#             .sort("upload_date", -1)
-#             .limit(limit)
-#         )
-#         return {
-#             "count": len(docs),
-#             "items": docs
-#         }
-#     except Exception as e:
-#         print("MONGO HISTORY ERROR :", str(e))
-#         raise HTTPException(
-#             status_code=500,
-#             detail=f"Erreur récupération historique : {str(e)}"
-#         )
