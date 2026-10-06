@@ -28,7 +28,7 @@ RUN python -c "from huggingface_hub import snapshot_download; snapshot_download(
 # ── Code source + frontend ────────────────────────────────────────
 COPY backend/app.py backend/model.py backend/database.py backend/face_detection_yunet_2023mar.onnx ./
 
-# ── Port ──────────────────────────────────────────────────────────
+# ── Port
 EXPOSE 8000
 
 # ── Démarrage 

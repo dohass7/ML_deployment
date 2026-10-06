@@ -79,7 +79,7 @@ jobs:
           file: ./faceread5/frontend/Dockerfile
           push: true
           tags: |
-            ${{ secrets.REGISTRY_USERNAME }}/faceread-front::1.0.0
+            ${{ secrets.REGISTRY_USERNAME }}/faceread-front:1.0.0
             ${{ secrets.REGISTRY_USERNAME }}/faceread-front:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
