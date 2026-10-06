@@ -3,8 +3,8 @@ services:
     image: mongo:7
     container_name: faceread-mongodb
     restart: unless-stopped
-    ports:
-      - "${MONGO_PORT}:27017"
+    # ports:
+    #   - "${MONGO_PORT}:27017"
     volumes:
       - mongo_data:/data/db
       - mongo_configurations:/data/configdb
