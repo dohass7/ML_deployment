@@ -41,7 +41,7 @@ services:
     networks:
       - faceread-network
     environment:
-      MONGO_HOST_NAME: faceread-mongodb
+      MONGO_HOST: faceread-mongodb
       MONGO_PORT: ${MONGO_PORT}
       MONGO_DATABASE: ${MONGO_DB}
       MONGO_USERNAME: ${MONGO_ROOT_USERNAME}
