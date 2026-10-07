@@ -23,8 +23,8 @@ register_heif_opener()
 # Chargement modèle ViT
 # ============================================================
 
-processor = ViTImageProcessor.from_pretrained("./vit-face-raf-db")
-model = ViTForImageClassification.from_pretrained("./vit-face-raf-db")
+processor = ViTImageProcessor.from_pretrained("/app/models/vit-face-raf-db")
+model = ViTForImageClassification.from_pretrained("/app/models/vit-face-raf-db")
 
 model.eval()
 torch.set_num_threads(2) #après les imports pour éviter que PyTorch monopolise tous les CPU du VPS
@@ -33,7 +33,7 @@ torch.set_num_threads(2) #après les imports pour éviter que PyTorch monopolise
 # ============================================================
 
 face_detector = cv2.FaceDetectorYN.create(
-    "face_detection_yunet_2023mar.onnx",
+    "/app/models/face_detection_yunet_2023mar.onnx",
     "",
     (320, 320),
     0.7,
