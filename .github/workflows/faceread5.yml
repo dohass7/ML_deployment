@@ -143,6 +143,7 @@ jobs:
           API_PORT=${{ secrets.API_PORT }}
           FRONT_PORT=${{ secrets.FRONT_PORT }}
           MONGO_DB=${{ secrets.MONGO_DB }}
+          MONGO_HOST_NAME=${{ secrets.MONGO_HOST_NAME }}
           ENVEOF
           chmod 600 ${{ env.PROJECT_LOCATION }}/.env"
 

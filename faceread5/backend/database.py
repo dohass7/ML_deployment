@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_HOST = faceread-mongodb
+MONGO_HOST = os.getenv("MONGO_HOST")
 MONGO_PORT = int(os.getenv("MONGO_PORT"))
 MONGO_DATABASE = os.getenv("MONGO_DATABASE")
 MONGO_USERNAME = os.getenv("MONGO_USERNAME")
