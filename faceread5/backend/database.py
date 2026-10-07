@@ -11,9 +11,9 @@ MONGO_USERNAME = os.getenv("MONGO_ROOT_USERNAME")
 MONGO_PASSWORD = os.getenv("MONGO_ROOT_PASSWORD")
 
 client = MongoClient(
-    f"mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}"
+    f"mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}?authSource=admin"
 )
 
 db = client[MONGO_DATABASE]
 
-collection = db["analyses"]
+collection = db["analyses"]  
