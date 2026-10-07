@@ -4,10 +4,7 @@ from pymongo import MongoClient
 
 from dotenv import load_dotenv
 
-
 load_dotenv()
-
-
 
 MONGO_HOST = faceread-mongodb
 MONGO_PORT = int(os.getenv("MONGO_PORT"))
