@@ -32,7 +32,7 @@ COPY backend/model.py .
 COPY backend/database.py .
 COPY backend/face_detection_yunet_2023mar.onnx .
 
-RUN python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='michaelgathara/vit-face-raf-db', local_dir='/app/vit-face-raf-db')"
+#RUN python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='michaelgathara/vit-face-raf-db', local_dir='/app/vit-face-raf-db')"
 
 EXPOSE 8000
 
