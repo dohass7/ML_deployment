@@ -70,7 +70,7 @@ jobs:
             ${{ secrets.REGISTRY_USERNAME }}/faceread-api:1.0.0
             ${{ secrets.REGISTRY_USERNAME }}/faceread-api:${{ github.sha }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=min,ignore-error=true
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v5

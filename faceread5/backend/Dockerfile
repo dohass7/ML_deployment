@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-# ── Variables d'environnement ─────────────────────────────────────
+# ── Variables d'environnement 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
