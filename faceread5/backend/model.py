@@ -23,8 +23,8 @@ register_heif_opener()
 # Chargement modèle ViT
 # ============================================================
 
-processor = ViTImageProcessor.from_pretrained("/app/models/vit-face-raf-db")
-model = ViTForImageClassification.from_pretrained("/app/models/vit-face-raf-db")
+processor = ViTImageProcessor.from_pretrained("/app/models")
+model = ViTForImageClassification.from_pretrained("/app/models")
 
 model.eval()
 torch.set_num_threads(2) #après les imports pour éviter que PyTorch monopolise tous les CPU du VPS

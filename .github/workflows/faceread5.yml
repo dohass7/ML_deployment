@@ -5,10 +5,10 @@ on:
     branches: [main]
     paths:
       - 'faceread5/**'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'faceread5/**'
+  # pull_request:
+  #   branches: [main]
+  #   paths:
+  #     - 'faceread5/**'
 
 env:
   PROJECT_LOCATION: /opt/applications/faceread5
