@@ -49,7 +49,6 @@ services:
       MONGO_USERNAME: ${MONGO_ROOT_USERNAME}
       MONGO_PASSWORD: ${MONGO_ROOT_PASSWORD}
 
-
   faceread-front:
     image: ddb7/faceread-front:1.0.0
     container_name: faceread-front
