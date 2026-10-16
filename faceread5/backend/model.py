@@ -55,8 +55,25 @@ def check_status():
 # ============================================================
 # Prediction
 # ============================================================
+MAX_WIDTH = 1024
+
+def resize_if_needed(pil_image):
+    """Réduit l'image à MAX_WIDTH px de large si elle dépasse, sinon inchangée."""
+    if pil_image.width > MAX_WIDTH:
+        ratio = MAX_WIDTH / pil_image.width
+        new_size = (MAX_WIDTH, int(pil_image.height * ratio))
+        print(f"🔧 Redimensionnement : {pil_image.size} → {new_size}")
+        pil_image = pil_image.resize(new_size, Image.LANCZOS)
+    return pil_image
+
+# ============================================================
+# Prediction
+# ============================================================
 
 def predict_emotion(pil_image):
+
+    
+    pil_image = resize_if_needed(pil_image)
 
     img_rgb = np.array(
         pil_image.convert("RGB")
