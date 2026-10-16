@@ -71,10 +71,7 @@ def resize_if_needed(pil_image):
 # ============================================================
 
 def predict_emotion(pil_image):
-
-    
     pil_image = resize_if_needed(pil_image)
-
     img_rgb = np.array(
         pil_image.convert("RGB")
     )
