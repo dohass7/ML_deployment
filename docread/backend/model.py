@@ -1,6 +1,14 @@
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
+# Optimisations CPU
+os.environ["OMP_NUM_THREADS"] = "6"  # Aligne avec ton nombre de cœurs
+os.environ["MKL_NUM_THREADS"] = "6"
+os.environ["TORCH_NUM_THREADS"] = "6"
+os.environ["TRANSFORMERS_VERBOSITY"] = "error" 
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+
 import io
 import json
 import re
@@ -40,7 +48,7 @@ llm = Qwen3VLForConditionalGeneration.from_pretrained(   # ← CHANGÉ
 )
 
 llm.eval()
-torch.set_num_threads(2)
+torch.set_num_threads(4)
 
 print("✅ Modèle chargé.")
 
