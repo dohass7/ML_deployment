@@ -57,7 +57,7 @@ def check_status():
 # Chargement des fichiers → liste d'images PIL
 # ============================================================
 
-def load_cv_as_images(filename, file_bytes, dpi=80, max_width=1024):
+def load_cv_as_images(filename, file_bytes, dpi=80, max_width=1280):
     """
     Retourne une liste d'images PIL.
     Supporte : PDF, JPG, PNG, HEIC, HEIF, WebP, BMP, TIFF.
