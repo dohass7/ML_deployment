@@ -15,7 +15,8 @@ COPY backend/requirements.txt .
 
 # PyTorch CPU + torchvision CPU (versions alignées et disponibles)
 # --index-url force la wheel CPU pour éviter l'erreur "torchvision::nms"
-RUN pip install --user --no-cache-dir \
+# pour garantir qu'ils ne sont pas écrasés par une dépendance transitive
+RUN pip install --user --no-cache-dir --force-reinstall \
     --index-url https://download.pytorch.org/whl/cpu \
     torch==2.5.1 \
     torchvision==0.20.1
