@@ -23,7 +23,7 @@ pillow_heif.register_heif_opener()
 # Chargement du modèle Qwen2-VL (CPU)
 # ============================================================
 
-MODEL_PATH = "/app/models"
+MODEL_PATH = "/app/models/Qwen3-VL-2B-Instruct"
 
 print("⏳ Chargement du modèle Qwen2-VL...")
 
