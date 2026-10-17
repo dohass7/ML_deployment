@@ -210,7 +210,7 @@ def predict_invoice(filename: str, file_bytes: bytes) -> dict:
             with torch.no_grad():
                 generated_ids = llm.generate(
                     **inputs,
-                    max_new_tokens=256,
+                    max_new_tokens=150,
                     do_sample=False,      # déterministe
                 )
 
