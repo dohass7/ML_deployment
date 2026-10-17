@@ -1,0 +1,65 @@
+services:
+  invoiceread-mongodb:
+    image: mongo:7
+    container_name: invoiceread-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongo_data_doc:/data/db
+    networks:
+      - invoiceread-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+
+  invoiceread-mongo-express:
+    image: mongo-express:1.0.2-20-alpine3.19
+    container_name: invoiceread-mongo-express
+    restart: unless-stopped
+    depends_on:
+      - invoiceread-mongodb
+    ports:
+      - "${MONGO_EXPRESS_PORT_I}:8081"
+    networks:
+      - invoiceread-network
+    environment:
+      ME_CONFIG_MONGODB_SERVER: invoiceread-mongodb
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD}
+      ME_CONFIG_BASICAUTH: ${ME_BASICAUTH_ENABLED}
+
+  invoiceread-api:
+    image: ddb7/invoiceread-api:1.0.0
+    container_name: invoiceread-api
+    restart: unless-stopped
+    depends_on:
+      - invoiceread-mongodb
+    volumes:
+      - /opt/applications/docread/models:/app/models:ro
+    networks:
+      - invoiceread-network
+    environment:
+      MONGO_HOST: ${MONGO_HOST_I}
+      MONGO_PORT: ${MONGO_PORT}
+      MONGO_DATABASE: ${MONGO_DB_I}
+      MONGO_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_PASSWORD: ${MONGO_ROOT_PASSWORD}
+
+  invoiceread-front:
+    image: ddb7/invoiceread-front:1.0.0
+    container_name: invoiceread-front
+    restart: unless-stopped
+    depends_on:
+      - invoiceread-api
+    ports:
+      - "${FRONT_PORT_I}:80"
+    networks:
+      - invoiceread-network
+
+volumes:
+  mongo_data_doc:
+    name: mongo_data_doc
+    external: true
+
+networks:
+  invoiceread-network:
+    external: true
