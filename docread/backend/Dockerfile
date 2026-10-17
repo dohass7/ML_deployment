@@ -15,8 +15,8 @@ COPY backend/requirements.txt .
 # PyTorch CPU + torchvision : versions compatibles
 RUN pip install --user --no-cache-dir \
     --index-url https://download.pytorch.org/whl/cpu \
-    torch==2.5.1 \
-    torchvision==0.20.1
+    torch==2.6.0 \
+    torchvision==0.21.0
 
 # Vérification immédiate
 RUN python -c "import torch, torchvision; print('Torch:', torch.__version__); print('Torchvision:', torchvision.__version__)"
