@@ -11,7 +11,7 @@ import pillow_heif
 
 import torch
 from transformers import (
-    Qwen2VLForConditionalGeneration,
+    Qwen3VLForConditionalGeneration,   # ← CHANGÉ
     AutoProcessor,
 )
 from qwen_vl_utils import process_vision_info
@@ -20,27 +20,27 @@ from qwen_vl_utils import process_vision_info
 pillow_heif.register_heif_opener()
 
 # ============================================================
-# Chargement du modèle Qwen2-VL (CPU)
+# Chargement du modèle Qwen3-VL (CPU)
 # ============================================================
 
 MODEL_PATH = "/app/models/Qwen3-VL-2B-Instruct"
 
-print("⏳ Chargement du modèle Qwen2-VL...")
+print("⏳ Chargement du modèle Qwen3-VL...")
 
 processor = AutoProcessor.from_pretrained(
     MODEL_PATH,
     trust_remote_code=True,
 )
 
-llm = Qwen2VLForConditionalGeneration.from_pretrained(
+llm = Qwen3VLForConditionalGeneration.from_pretrained(   # ← CHANGÉ
     MODEL_PATH,
-    torch_dtype=torch.float32,   # CPU : float32 stable
+    torch_dtype=torch.float32,
     device_map="cpu",
     trust_remote_code=True,
 )
 
 llm.eval()
-torch.set_num_threads(2)   # VPS CPU limité
+torch.set_num_threads(2)
 
 print("✅ Modèle chargé.")
 
@@ -57,7 +57,7 @@ def check_status():
 # Chargement des fichiers → liste d'images PIL
 # ============================================================
 
-def load_cv_as_images(filename, file_bytes, dpi=80, max_width=1280):
+def load_cv_as_images(filename, file_bytes, dpi=80, max_width=1024):
     """
     Retourne une liste d'images PIL.
     Supporte : PDF, JPG, PNG, HEIC, HEIF, WebP, BMP, TIFF.
