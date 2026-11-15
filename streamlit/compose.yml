@@ -1,0 +1,16 @@
+services:
+  face-emotion-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: face-emotion-app:latest
+    container_name: face-emotion-app
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_PORT=8501
+    volumes:
+      # Monte le modèle séparément pour le mettre à jour sans rebuild
+      - ./streamlit/models:/app/streamlit/models:ro

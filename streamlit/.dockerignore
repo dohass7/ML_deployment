@@ -1,0 +1,11 @@
+__pycache__/
+.Python
+.venv/
+venv/
+env/
+.git/
+.gitignore
+*.md
+.gitignore
+.dockerignore
+
