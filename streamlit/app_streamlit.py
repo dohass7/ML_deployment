@@ -46,20 +46,20 @@ def predict_emotion(face_array):
     emotion_class = preds.argmax()
     return labels[emotion_class]
 
-# BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent
 
-# ROOT_DIR = BASE_DIR.parent
+ROOT_DIR = BASE_DIR.parent
 
-# MODEL_PATH = ROOT_DIR / "models" / "best_model.h5"
+MODEL_PATH = ROOT_DIR / "best_model.h5"
 
-# if not MODEL_PATH.exists():
-#     import streamlit as st
-#     st.error(f"Le fichier de modèle est introuvable : {MODEL_PATH}")
-#     st.write("Contenu du répertoire racine du dépôt :", list(ROOT_DIR.iterdir()))
-#     st.stop()
+if not MODEL_PATH.exists():
+    import streamlit as st
+    st.error(f"Le fichier de modèle est introuvable : {MODEL_PATH}")
+    st.write("Contenu du répertoire racine du dépôt :", list(ROOT_DIR.iterdir()))
+    st.stop()
 
-# model = keras.models.load_model(MODEL_PATH)
-model = keras.models.load_model("best_model.h5")
+model = keras.models.load_model(MODEL_PATH)
+#model = keras.models.load_model("best_model.h5")
 
 labels = ['Angry', 'Fear', 'Happy', 'Sad', 'Suprise']
 
