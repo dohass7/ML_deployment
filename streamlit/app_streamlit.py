@@ -4,6 +4,7 @@ from tensorflow import keras
 from PIL import Image
 import numpy as np
 import cv2
+from pathlib import Path
 
 st.title("Face emotion classification")
 
@@ -39,15 +40,29 @@ def preprocess_image(uploaded_file):
     face_tf = tf.cast(face,tf.float32)
     return face_tf
 
-model = keras.models.load_model("models/best_model.h5")
-
-labels = ['Angry', 'Fear', 'Happy', 'Sad', 'Suprise']
-
 def predict_emotion(face_array):
     
     preds = model.predict(face_array)
     emotion_class = preds.argmax()
     return labels[emotion_class]
+
+BASE_DIR = Path(__file__).resolve().parent
+
+ROOT_DIR = BASE_DIR.parent
+
+MODEL_PATH = ROOT_DIR / "models" / "best_model.h5"
+
+if not MODEL_PATH.exists():
+    import streamlit as st
+    st.error(f"Le fichier de modèle est introuvable : {MODEL_PATH}")
+    st.write("Contenu du répertoire racine du dépôt :", list(ROOT_DIR.iterdir()))
+    st.stop()
+
+model = keras.models.load_model(MODEL_PATH)
+#model = keras.models.load_model("models/best_model.h5")
+
+labels = ['Angry', 'Fear', 'Happy', 'Sad', 'Suprise']
+
 
 st.button("Let's get started", on_click = clicked, args = [1])
 
