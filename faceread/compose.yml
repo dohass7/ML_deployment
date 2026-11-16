@@ -31,7 +31,7 @@ services:
       ME_CONFIG_BASICAUTH: ${ME_BASICAUTH_ENABLED}
 
   faceread-api:
-    image: ddb7/faceread-api:1.0.0
+    image: ddb7/faceread-api:latest
     container_name: faceread-api
     restart: unless-stopped
     depends_on:
@@ -50,7 +50,7 @@ services:
       MONGO_PASSWORD: ${MONGO_ROOT_PASSWORD}
 
   faceread-front:
-    image: ddb7/faceread-front:1.0.0
+    image: ddb7/faceread-front:latest
     container_name: faceread-front
     restart: unless-stopped
     depends_on:

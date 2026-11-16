@@ -28,7 +28,7 @@ services:
       ME_CONFIG_BASICAUTH: ${ME_BASICAUTH_ENABLED}
 
   invoiceread-api:
-    image: ddb7/invoiceread-api:1.0.0
+    image: ddb7/invoiceread-api:latest
     container_name: invoiceread-api
     restart: unless-stopped
     depends_on:
@@ -45,7 +45,7 @@ services:
       MONGO_PASSWORD: ${MONGO_ROOT_PASSWORD}
 
   invoiceread-front:
-    image: ddb7/invoiceread-front:1.0.0
+    image: ddb7/invoiceread-front:latest
     container_name: invoiceread-front
     restart: unless-stopped
     depends_on:
