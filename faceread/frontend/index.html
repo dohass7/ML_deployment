@@ -1491,6 +1491,12 @@
 
 
 <script>
+    // =====================================================
+    // API URL
+    // =====================================================
+
+    //const API_URL = `${window.location.protocol}//${window.location.hostname}:8000`;
+    const API_URL = "/api";
 
     // =====================================================
     // ELEMENTS
@@ -1702,6 +1708,8 @@
     // ANALYZE
     // =====================================================
 
+   
+
     analyzeBtn.addEventListener(
         "click",
         analyzeImage
@@ -1747,7 +1755,7 @@
 
             const response =
                 await fetch(
-                    "/predict",
+                    `${API_URL}/predict`,
                     {
                         method: "POST",
                         body: formData

@@ -14,9 +14,9 @@ from fastapi import (
 
 from fastapi.middleware.cors import CORSMiddleware
 
-from fastapi.staticfiles import StaticFiles
+#from fastapi.staticfiles import StaticFiles
 
-from fastapi.responses import FileResponse
+#from fastapi.responses import FileResponse
 
 from PIL import Image
 
@@ -26,6 +26,11 @@ from model import (
 )
 
 from pillow_heif import register_heif_opener
+
+from datetime import datetime
+
+from database import collection
+from fastapi import Query
 
 register_heif_opener()
 
@@ -56,29 +61,6 @@ app.add_middleware(
 )
 
 
-# ============================================================
-# FRONTEND
-# ============================================================
-
-app.mount(
-    "/static",
-    StaticFiles(
-        directory="frontend"
-    ),
-    name="static"
-)
-
-
-# ============================================================
-# HOME
-# ============================================================
-
-@app.get("/")
-async def root():
-
-    return FileResponse(
-        "frontend/index.html"
-    )
 
 
 # ============================================================
@@ -98,6 +80,18 @@ async def health_check():
             f"unreachable ({str(e)})"
         )
 
+    try:
+
+        collection.count_documents({})
+
+        mongo_status = "connected"
+
+    except Exception as e:
+
+        mongo_status = (
+            f"unreachable ({str(e)})"
+        )
+
     return {
         "status": "healthy",
 
@@ -105,7 +99,10 @@ async def health_check():
             "Backend service is running",
 
         "model_status":
-            status
+            status,
+
+        "mongodb":
+            mongo_status
     }
 
 
@@ -173,7 +170,15 @@ async def predict(
         result = predict_emotion(
             image
         )
-
+        try:
+            collection.insert_one({
+                "filename": file.filename,
+                "upload_date": datetime.utcnow(),
+                "faces_count": len(result["faces"]),
+                "faces": result["faces"],
+            })
+        except Exception as e:
+            print("MONGO INSERT ERROR :", str(e))
         # Debug backend
         print(
             "RESULTAT ENVOYÉ AU FRONTEND :",

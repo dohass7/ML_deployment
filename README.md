@@ -1,0 +1,1 @@
+This repository contains the deployments of the projects (on Streamlit cloud and on a server). Each project has its own documentation.

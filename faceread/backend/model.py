@@ -23,17 +23,17 @@ register_heif_opener()
 # Chargement modèle ViT
 # ============================================================
 
-processor = ViTImageProcessor.from_pretrained("./vit-face-raf-db")
-model = ViTForImageClassification.from_pretrained("./vit-face-raf-db")
+processor = ViTImageProcessor.from_pretrained("/app/models")
+model = ViTForImageClassification.from_pretrained("/app/models")
 
 model.eval()
-
+torch.set_num_threads(2) #après les imports pour éviter que PyTorch monopolise tous les CPU du VPS
 # ============================================================
 # Chargement YuNet
 # ============================================================
 
 face_detector = cv2.FaceDetectorYN.create(
-    "face_detection_yunet_2023mar.onnx",
+    "/app/models/face_detection_yunet_2023mar.onnx",
     "",
     (320, 320),
     0.7,
@@ -55,9 +55,23 @@ def check_status():
 # ============================================================
 # Prediction
 # ============================================================
+MAX_WIDTH = 1024
+
+def resize_if_needed(pil_image):
+    """Réduit l'image à MAX_WIDTH px de large si elle dépasse, sinon inchangée."""
+    if pil_image.width > MAX_WIDTH:
+        ratio = MAX_WIDTH / pil_image.width
+        new_size = (MAX_WIDTH, int(pil_image.height * ratio))
+        print(f"🔧 Redimensionnement : {pil_image.size} → {new_size}")
+        pil_image = pil_image.resize(new_size, Image.LANCZOS)
+    return pil_image
+
+# ============================================================
+# Prediction
+# ============================================================
 
 def predict_emotion(pil_image):
-
+    pil_image = resize_if_needed(pil_image)
     img_rgb = np.array(
         pil_image.convert("RGB")
     )
