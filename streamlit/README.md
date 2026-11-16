@@ -1,17 +1,16 @@
-### En local
+### Local
 
-Avec Docker Compose :
+With Docker Compose: :
 
-'''bash
+```sh
 docker compose up -d
-'''
+```
 
-### Déployer sur Streamlit Cloud
-
-Le code étant hébergé sur GitHub, se connecter à share.streamlit.io, cliquer sur "Create app" puis "Deploy a public app from GitHub", renseigner les informations demandées et lancer le déploiement.
+### Deploy on Streamlit Cloud
+With the code hosted on GitHub, go to share.streamlit.io, click on **Create app** then **Deploy a public app from GitHub**, fill in the requested information and launch the deployment.
 
 ![Déploiement Streamlit](../docs/streamlit1.png)
 
-### Le résultat
+### Application on Streamlit Cloud
 
-![Application déployée](chemin/vers/image-resultat.png)
+![Application déployée](../docs/streamlit2.png)
