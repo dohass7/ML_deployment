@@ -50,7 +50,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 ROOT_DIR = BASE_DIR.parent
 
-MODEL_PATH = ROOT_DIR / "best_model.h5"
+MODEL_PATH = ROOT_DIR / "streamlit" / "models" / "best_model.h5"
 
 if not MODEL_PATH.exists():
     import streamlit as st
