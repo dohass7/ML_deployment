@@ -39,7 +39,7 @@ def preprocess_image(uploaded_file):
     face_tf = tf.cast(face,tf.float32)
     return face_tf
 
-model = keras.models.load_model("./models/best_model.h5")
+model = keras.models.load_model("models/best_model.h5")
 
 labels = ['Angry', 'Fear', 'Happy', 'Sad', 'Suprise']
 
