@@ -15,5 +15,5 @@ The application uses QWEN-VL to extract key information from invoices:
 ## Application results
 
 
-![invoice1](../docs/invoice1.png)
-![invoice2](../docs/invoice2.png)
+![invoice1](../docs/Cligraphcrm_facture.png)
+![invoice2](../docs/facture2.png)
