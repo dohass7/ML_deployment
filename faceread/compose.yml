@@ -39,7 +39,7 @@ services:
     # ports:
     #   - "${API_PORT}:8000"
     volumes:
-    - /opt/applications/faceread5/models:/app/models:ro
+    - /opt/applications/faceread/models:/app/models:ro
     networks:
       - faceread-network
     environment:
